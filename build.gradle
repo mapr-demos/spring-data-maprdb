@@ -16,6 +16,11 @@ repositories {
 
 dependencies {
     compile 'com.mapr.db:maprdb:6.0.1-mapr'
+//    compile 'org.springframework:spring-tx:5.0.8.RELEASE'
+    compile 'org.springframework:spring-context:5.0.8.RELEASE'
+//    compile 'org.springframework:spring-beans:5.0.8.RELEASE'
+//    compile 'org.springframework:spring-core:5.0.8.RELEASE'
+//    compile 'org.springframework:spring-expression:5.0.8.RELEASE'
     compile 'org.springframework.data:spring-data-commons:2.0.9.RELEASE'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
