@@ -16,7 +16,6 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
         super();
         this.maprOperations = maprOperations;
         this.domainClass = domainClass;
-
     }
 
     @Override
