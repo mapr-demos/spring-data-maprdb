@@ -26,4 +26,21 @@ public class User {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        if (get_id() != null ? !get_id().equals(user.get_id()) : user.get_id() != null) return false;
+        return getName() != null ? getName().equals(user.getName()) : user.getName() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = get_id() != null ? get_id().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        return result;
+    }
 }
