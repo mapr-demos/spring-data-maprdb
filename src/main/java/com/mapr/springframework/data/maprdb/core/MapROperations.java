@@ -2,7 +2,7 @@ package com.mapr.springframework.data.maprdb.core;
 
 import com.mapr.db.Table;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface MapROperations {
@@ -27,29 +27,29 @@ public interface MapROperations {
 
     <T> Optional<T> findById(Object id, Class<T> entityClass, final String tableName);
 
-    <T> Collection<T> findAll(Class<T> entityClass);
+    <T> List<T> findAll(Class<T> entityClass);
 
-    <T> Collection<T> findAll(Class<T> entityClass, final String tableName);
+    <T> List<T> findAll(Class<T> entityClass, final String tableName);
 
     <T> T insert(T objectToSave);
 
     <T> T insert(T objectToSave, final String tableName);
 
-    <T> Collection<T> insertAll(Collection<? extends T> objectsToSave);
+    <T> List<T> insert(Iterable<T> objectsToSave);
 
     <T> T save(T objectToSave);
 
     <T> T save(T objectToSave, final String tableName);
 
-    <T> Collection<T> save(Collection<? extends T> objectsToSave);
+    <T> List<T> save(Iterable<T>  objectsToSave);
 
     void remove(Object object);
 
     void remove(Object object, final String tableName);
 
-    <T> void remove(Object id, Class<T> entityClass);
+    <T> void removeById(Object id, Class<T> entityClass);
 
-    <T> void remove(Object id, Class<T> entityClass, final String tableName);
+    <T> void removeById(Object id, Class<T> entityClass, final String tableName);
 
     <T> long count(Class<T> entityClass);
 

@@ -7,11 +7,12 @@ import org.ojai.DocumentStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class MapRTemplate implements MapROperations {
 
@@ -74,12 +75,12 @@ public class MapRTemplate implements MapROperations {
     }
 
     @Override
-    public <T> Collection<T> findAll(Class<T> entityClass) {
+    public <T> List<T> findAll(Class<T> entityClass) {
         return findAll(entityClass, getTablePath(entityClass));
     }
 
     @Override
-    public <T> Collection<T> findAll(Class<T> entityClass, final String tableName) {
+    public <T> List<T> findAll(Class<T> entityClass, final String tableName) {
         return convertDocumentStreamToIterable(getTable(tableName).find(), entityClass);
     }
 
@@ -100,8 +101,8 @@ public class MapRTemplate implements MapROperations {
     }
 
     @Override
-    public <T> Collection<T> insertAll(Collection<? extends T> objectsToSave) {
-        return objectsToSave.stream().map(this::insert).collect(Collectors.toList());
+    public <T> List<T> insert(Iterable<T> objectsToSave) {
+        return StreamSupport.stream(objectsToSave.spliterator(), false).map(this::insert).collect(Collectors.toList());
     }
 
     @Override
@@ -121,8 +122,8 @@ public class MapRTemplate implements MapROperations {
     }
 
     @Override
-    public <T> Collection<T> save(Collection<? extends T> objectsToSave) {
-        return objectsToSave.stream().map(this::save).collect(Collectors.toList());
+    public <T> List<T> save(Iterable<T> objectsToSave) {
+        return StreamSupport.stream(objectsToSave.spliterator(), false).map(this::save).collect(Collectors.toList());
     }
 
     @Override
@@ -132,17 +133,18 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public void remove(Object object, final String tableName) {
-        getTable(getPath(tableName)).delete(MapRDB.newDocument(object));
+        getTable(tableName).delete(MapRDB.newDocument(object));
     }
 
     @Override
-    public <T> void remove(Object id, Class<T> entityClass) {
-        remove(id, entityClass, getTablePath(entityClass));
+    public <T> void removeById(Object id, Class<T> entityClass) {
+        removeById(id, entityClass, getTablePath(entityClass));
     }
 
     @Override
-    public <T> void remove(Object id, Class<T> entityClass, final String tableName) {
-        remove(findById(id, entityClass, tableName));
+    public <T> void removeById(Object id, Class<T> entityClass, final String tableName) {
+        getTable(tableName).delete(id.toString());
+//        remove(findById(id, entityClass, tableName), tableName);
     }
 
     @Override
@@ -163,8 +165,8 @@ public class MapRTemplate implements MapROperations {
         return totalRow;
     }
 
-    private <T> Collection<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
-        Collection<T> resultCollection = new LinkedList<>();
+    private <T> List<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
+        List<T> resultCollection = new LinkedList<>();
 
         documentStream.forEach(d -> resultCollection.add(d.toJavaBean(entityClass)));
 

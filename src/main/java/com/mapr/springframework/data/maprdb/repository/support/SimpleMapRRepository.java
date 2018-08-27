@@ -6,9 +6,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
 import java.util.Optional;
 
-public class SimpleMapRRepository<T, ID> implements MapRRepository {
+public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
 
     private final MapROperations maprOperations;
     private final Class<T> domainClass;
@@ -20,27 +22,27 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
     }
 
     @Override
-    public Iterable findAll(Sort sort) {
+    public Iterable<T> findAll(Sort sort) {
         return null;
     }
 
     @Override
-    public Page findAll(Pageable pageable) {
+    public Page<T> findAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public Object save(Object entity) {
+    public <S extends T> S save(S entity) {
         return maprOperations.save(entity);
     }
 
     @Override
-    public Iterable saveAll(Iterable entities) {
+    public <S extends T> List<S> saveAll(Iterable<S> entities) {
         return maprOperations.save(entities);
     }
 
     @Override
-    public Optional findById(Object o) {
+    public Optional<T> findById(Object o) {
         return maprOperations.findById(o, domainClass);
     }
 
@@ -50,12 +52,22 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
     }
 
     @Override
-    public Iterable findAll() {
+    public List<T> findAll() {
         return maprOperations.findAll(domainClass);
     }
 
     @Override
-    public Iterable findAllById(Iterable iterable) {
+    public <S extends T> S insert(S entity) {
+        return maprOperations.insert(entity);
+    }
+
+    @Override
+    public <S extends T> List<S> insert(Iterable<S> entities) {
+        return maprOperations.insert(entities);
+    }
+
+    @Override
+    public Iterable<T> findAllById(Iterable iterable) {
         return null;
     }
 
@@ -65,8 +77,8 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
     }
 
     @Override
-    public void deleteById(Object o) {
-        maprOperations.remove(o, domainClass);
+    public void deleteById(final ID id) {
+        maprOperations.removeById(id, domainClass);
     }
 
     @Override
@@ -85,22 +97,22 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
     }
 
     @Override
-    public Optional findOne(Example example) {
+    public <S extends T> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public Iterable findAll(Example example) {
+    public <S extends T> Iterable<S> findAll(Example<S> example) {
         return null;
     }
 
     @Override
-    public Iterable findAll(Example example, Sort sort) {
+    public <S extends T> Iterable<S> findAll(Example<S> example, Sort sort) {
         return null;
     }
 
     @Override
-    public Page findAll(Example example, Pageable pageable) {
+    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
