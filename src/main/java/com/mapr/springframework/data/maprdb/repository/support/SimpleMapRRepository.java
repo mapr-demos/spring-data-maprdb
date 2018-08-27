@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import java.util.Optional;
 
 public class SimpleMapRRepository<T, ID> implements MapRRepository {
+
     private final MapROperations maprOperations;
     private final Class<T> domainClass;
 
@@ -30,22 +31,22 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
 
     @Override
     public Object save(Object entity) {
-        return null;
+        return maprOperations.save(entity);
     }
 
     @Override
     public Iterable saveAll(Iterable entities) {
-        return null;
+        return maprOperations.save(entities);
     }
 
     @Override
     public Optional findById(Object o) {
-        return maprOperations.find(o, domainClass);
+        return maprOperations.findById(o, domainClass);
     }
 
     @Override
     public boolean existsById(Object o) {
-        return false;
+        return findById(o).isPresent();
     }
 
     @Override
@@ -60,27 +61,27 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
 
     @Override
     public long count() {
-        return 0;
+        return maprOperations.count(domainClass);
     }
 
     @Override
     public void deleteById(Object o) {
-
+        maprOperations.remove(o, domainClass);
     }
 
     @Override
     public void delete(Object entity) {
-
+        maprOperations.remove(entity);
     }
 
     @Override
     public void deleteAll(Iterable entities) {
-
+        entities.forEach(this::delete);
     }
 
     @Override
     public void deleteAll() {
-
+        deleteAll(findAll());
     }
 
     @Override
@@ -112,4 +113,5 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository {
     public boolean exists(Example example) {
         return false;
     }
+
 }
