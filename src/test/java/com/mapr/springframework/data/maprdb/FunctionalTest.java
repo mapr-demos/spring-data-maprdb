@@ -74,7 +74,7 @@ public class FunctionalTest {
 
         userRepository.save(user);
 
-        User userFromDB = userRepository.findById(user.get_id()).get();
+        User userFromDB = userRepository.findById(user.getId()).get();
 
         Assert.assertEquals(user, userFromDB);
     }
@@ -86,7 +86,7 @@ public class FunctionalTest {
         user.setName("new_test_user");
         userRepository.save(user);
 
-        User userFromDB = userRepository.findById(user.get_id()).get();
+        User userFromDB = userRepository.findById(user.getId()).get();
 
         Assert.assertEquals(user, userFromDB);
     }
@@ -108,7 +108,7 @@ public class FunctionalTest {
 
         userRepository.insert(user);
 
-        User userFromDB = userRepository.findById(user.get_id()).get();
+        User userFromDB = userRepository.findById(user.getId()).get();
 
         Assert.assertEquals(user, userFromDB);
     }
@@ -151,7 +151,7 @@ public class FunctionalTest {
         userRepository.save(user);
         userRepository.save(getUser());
 
-        userRepository.deleteById(user.get_id());
+        userRepository.deleteById(user.getId());
 
         Assert.assertEquals(1, userRepository.count());
     }
@@ -177,7 +177,7 @@ public class FunctionalTest {
 
         userRepository.deleteAll(users);
 
-        User userFromDB = userRepository.findById(user.get_id()).get();
+        User userFromDB = userRepository.findById(user.getId()).get();
 
         Assert.assertEquals(user, userFromDB);
     }
@@ -185,7 +185,7 @@ public class FunctionalTest {
     public User getUser() {
         User user = new User();
 
-        user.set_id(UUID.randomUUID().toString());
+        user.setId(UUID.randomUUID().toString());
         user.setName("test_user");
 
         return user;

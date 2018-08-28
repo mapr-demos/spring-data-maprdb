@@ -1,21 +1,23 @@
 package com.mapr.springframework.data.maprdb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
-import com.mapr.springframework.data.maprdb.core.mapping.MaprId;
+import com.mapr.springframework.data.maprdb.core.mapping.MapRId;
 
 @Document
 public class User {
 
-    @MaprId
-    private String _id;
+//    @MapRId
+    @JsonProperty("_id")
+    private String id;
     private String name;
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -33,13 +35,13 @@ public class User {
 
         User user = (User) o;
 
-        if (get_id() != null ? !get_id().equals(user.get_id()) : user.get_id() != null) return false;
+        if (getId() != null ? !getId().equals(user.getId()) : user.getId() != null) return false;
         return getName() != null ? getName().equals(user.getName()) : user.getName() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = get_id() != null ? get_id().hashCode() : 0;
+        int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }
