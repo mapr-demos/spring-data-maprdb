@@ -42,13 +42,13 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
     }
 
     @Override
-    public Optional<T> findById(Object o) {
-        return maprOperations.findById(o, domainClass);
+    public Optional<T> findById(final ID id) {
+        return maprOperations.findById(id, domainClass);
     }
 
     @Override
-    public boolean existsById(Object o) {
-        return findById(o).isPresent();
+    public boolean existsById(final ID id) {
+        return findById(id).isPresent();
     }
 
     @Override
