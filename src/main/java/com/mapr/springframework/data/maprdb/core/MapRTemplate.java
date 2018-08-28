@@ -116,7 +116,8 @@ public class MapRTemplate implements MapROperations {
 
         org.ojai.Document document = MapRDB.newDocument(objectToSave);
 
-        table.insert(document);
+        table.insertOrReplace(document);
+        table.flush();
 
         return (T) document.toJavaBean(objectToSave.getClass());
     }
