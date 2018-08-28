@@ -43,4 +43,5 @@ public class User {
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }
+
 }
