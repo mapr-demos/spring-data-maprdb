@@ -133,7 +133,9 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public void remove(Object object, final String tableName) {
-        getTable(tableName).delete(MapRDB.newDocument(object));
+        Table table = getTable(tableName);
+        table.delete(MapRDB.newDocument(object));
+        table.flush();
     }
 
     @Override
@@ -143,8 +145,9 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> void removeById(Object id, Class<T> entityClass, final String tableName) {
-        getTable(tableName).delete(id.toString());
-//        remove(findById(id, entityClass, tableName), tableName);
+        Table table = getTable(tableName);
+        table.delete(id.toString());
+        table.flush();
     }
 
     @Override
