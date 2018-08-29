@@ -17,13 +17,13 @@ public class MapRRepositoryFactory extends RepositoryFactorySupport {
 
     @Override
     public <T, ID> EntityInformation<T, ID> getEntityInformation(Class<T> domainClass) {
-        return new MapRPersistentEntityInformation<T, ID>(
+        return new MapRPersistentEntityInformation<>(
                 null);
     }
 
     @Override
     protected Object getTargetRepository(final RepositoryInformation metadata) {
-        return new SimpleMapRRepository(mapROperations, metadata.getDomainType());
+        return new SimpleMapRRepository<>(mapROperations, metadata.getDomainType());
     }
 
     @Override
