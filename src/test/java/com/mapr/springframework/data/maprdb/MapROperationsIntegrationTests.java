@@ -26,7 +26,7 @@ public class MapROperationsIntegrationTests {
     static class Config extends AbstractMapRConfiguration {
 
         @Override
-        protected String database() {
+        protected String getDatabaseName() {
             return DB_NAME;
         }
 

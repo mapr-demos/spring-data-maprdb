@@ -9,11 +9,11 @@ import java.util.Set;
 @Configuration
 public abstract class AbstractMapRConfiguration {
 
-    protected abstract String database();
+    protected abstract String getDatabaseName();
 
     @Bean
     public MapROperations maprOperations() throws Exception {
-        return new MapRTemplate(database());
+        return new MapRTemplate(getDatabaseName());
     }
 
     private Set<? extends Class<?>> getInitialEntitySet() throws ClassNotFoundException {
