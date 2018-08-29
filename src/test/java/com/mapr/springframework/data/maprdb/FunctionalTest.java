@@ -13,10 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.ojai.store.exceptions.DocumentExistsException;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -55,17 +53,9 @@ public class FunctionalTest {
     }
 
 
-    @Test
-    public void countTest() {
+    @Test(expected = UnsupportedOperationException.class)
+            public void countTest() {
         Assert.assertEquals(0, userRepository.count());
-
-        userRepository.save(getUser());
-
-        Assert.assertEquals(1, userRepository.count());
-
-        userRepository.saveAll(getUsers());
-
-        Assert.assertEquals(LIST_SIZE + 1, userRepository.count());
     }
 
     @Test
@@ -99,7 +89,7 @@ public class FunctionalTest {
 
         List<User> usersFromDB = userRepository.findAll();
 
-        Assert.assertEquals(new HashSet(users), new HashSet(usersFromDB));
+        Assert.assertEquals(new HashSet<>(users), new HashSet<>(usersFromDB));
     }
 
     @Test
@@ -121,7 +111,7 @@ public class FunctionalTest {
 
         List<User> usersFromDB = userRepository.findAll();
 
-        Assert.assertEquals(new HashSet(users), new HashSet(usersFromDB));
+        Assert.assertEquals(new HashSet<>(users), new HashSet<>(usersFromDB));
     }
 
     @Test(expected = DocumentExistsException.class)
@@ -133,27 +123,45 @@ public class FunctionalTest {
     }
 
     @Test
+    public void findAllByIdTest() {
+        List<User> users = getUsers();
+
+        userRepository.saveAll(users);
+        List<User> usersForSearch = Arrays.asList(users.get(5), users.get(10), users.get(20));
+        List<String> ids = usersForSearch.stream().map(User::getId).collect(Collectors.toList());
+        List<User> usersFromDB = userRepository.findAllById(ids);
+
+        Assert.assertEquals(new HashSet<>(usersForSearch), new HashSet<>(usersFromDB));
+    }
+
+    @Test
     public void deleteTest() {
-        User user = getUser();
+        User user1 = getUser();
+        User user2 = getUser();
+        userRepository.save(user1);
+        userRepository.save(user2);
 
-        userRepository.save(user);
-        userRepository.save(getUser());
+        userRepository.delete(user1);
 
-        userRepository.delete(user);
+        List<User> users = userRepository.findAll();
 
-        Assert.assertEquals(1, userRepository.count());
+        Assert.assertEquals(1, users.size());
+        Assert.assertEquals(user2, users.get(0));
     }
 
     @Test
     public void deleteByIdTest() {
-        User user = getUser();
+        User user1 = getUser();
+        User user2 = getUser();
+        userRepository.save(user1);
+        userRepository.save(user2);
 
-        userRepository.save(user);
-        userRepository.save(getUser());
+        userRepository.deleteById(user1.getId());
 
-        userRepository.deleteById(user.getId());
+        List<User> users = userRepository.findAll();
 
-        Assert.assertEquals(1, userRepository.count());
+        Assert.assertEquals(1, users.size());
+        Assert.assertEquals(user2, users.get(0));
     }
 
     @Test
@@ -162,7 +170,7 @@ public class FunctionalTest {
 
         userRepository.deleteAll();
 
-        Assert.assertEquals(0, userRepository.count());
+        Assert.assertEquals(0, userRepository.findAll().size());
     }
 
     @Test

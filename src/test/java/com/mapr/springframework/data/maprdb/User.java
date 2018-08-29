@@ -2,12 +2,10 @@ package com.mapr.springframework.data.maprdb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
-import com.mapr.springframework.data.maprdb.core.mapping.MapRId;
 
 @Document
 public class User {
 
-//    @MapRId
     @JsonProperty("_id")
     private String id;
     private String name;
