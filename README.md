@@ -72,7 +72,9 @@ public class MyService {
          user.setId("test_id");
          user.setName("Test user");
          
-         User userById = userRepository.findById("test_id");
+         userRepository.save(user);
+         
+         User userById = userRepository.findById("test_id").get();
      }
 }
 ```
