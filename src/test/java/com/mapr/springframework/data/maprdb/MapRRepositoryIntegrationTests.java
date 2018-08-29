@@ -1,10 +1,9 @@
 package com.mapr.springframework.data.maprdb;
 
 import com.mapr.springframework.data.maprdb.config.AbstractMapRConfiguration;
-import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.config.EnableMapRRepository;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class FunctionalTest {
+public class MapRRepositoryIntegrationTests {
 
     public final static int LIST_SIZE = 100;
     public final static String DB_NAME = "test";
@@ -37,15 +36,10 @@ public class FunctionalTest {
     @Autowired
     public UserRepository userRepository;
 
-    @Autowired
-    public MapROperations mapROperations;
-
-    @Before
-    public void init() {
-        mapROperations.dropTable(User.class);
-        mapROperations.createTable(User.class);
+    @After
+    public void delete() {
+        userRepository.deleteAll();
     }
-
 
     @Test
     public void repositoryFactoryTest() {

@@ -1,9 +1,9 @@
 package com.mapr.springframework.data.maprdb;
 
-import com.mapr.db.Table;
 import com.mapr.springframework.data.maprdb.config.AbstractMapRConfiguration;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.config.EnableMapRRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class IntegrationTest {
+public class MapROperationsIntegrationTests {
 
-    public final static String TABLE_NAME = "/test";
+    public final static String TABLE_NAME = "/user";
+    public final static String CUSTOM_TABLE_NAME = "/user2";
     public final static String DB_NAME = "test";
 
     @Configuration
@@ -35,15 +36,43 @@ public class IntegrationTest {
     public MapROperations mapROperations;
 
     @Before
-    public void init() {
+    @After
+    public void deleteTables() {
         mapROperations.dropTable(TABLE_NAME);
+        mapROperations.dropTable(CUSTOM_TABLE_NAME);
     }
 
     @Test
-    public void mapROperationsTest() {
+    public void tableNotExistsTest() {
+        Assert.assertFalse(mapROperations.tableExists(TABLE_NAME));
+    }
+
+    @Test
+    public void tableExistsTest() {
         mapROperations.createTable(TABLE_NAME);
-        Table table = mapROperations.getTable(TABLE_NAME);
-        Assert.assertNotNull(table);
+
+        Assert.assertTrue(mapROperations.tableExists(TABLE_NAME));
+    }
+
+    @Test
+    public void getTableTest() {
+        mapROperations.createTable(TABLE_NAME);
+
+        Assert.assertNotNull(mapROperations.getTable(TABLE_NAME));
+    }
+
+    @Test
+    public void createTableByEntityTest() {
+        mapROperations.createTable(User.class);
+
+        Assert.assertTrue(mapROperations.tableExists(TABLE_NAME));
+    }
+
+    @Test
+    public void createCustomTableByEntityTest() {
+        mapROperations.createTable(UserWithCustomTable.class);
+
+        Assert.assertTrue(mapROperations.tableExists(CUSTOM_TABLE_NAME));
     }
 
 }
