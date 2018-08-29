@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
 
@@ -19,16 +21,6 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
         super();
         this.maprOperations = maprOperations;
         this.domainClass = domainClass;
-    }
-
-    @Override
-    public Iterable<T> findAll(Sort sort) {
-        return null;
-    }
-
-    @Override
-    public Page<T> findAll(Pageable pageable) {
-        return null;
     }
 
     @Override
@@ -67,13 +59,14 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
     }
 
     @Override
-    public Iterable<T> findAllById(Iterable iterable) {
-        return null;
+    public List<T> findAllById(Iterable<ID> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .map(this::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     @Override
     public long count() {
-        return maprOperations.count(domainClass);
+        throw new UnsupportedOperationException("count method is not supported yet");
     }
 
     @Override
@@ -98,32 +91,32 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
 
     @Override
     public <S extends T> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
+        throw new UnsupportedOperationException("findOne method with Example is not supported yet");
     }
 
     @Override
     public <S extends T> Iterable<S> findAll(Example<S> example) {
-        return null;
+        throw new UnsupportedOperationException("findOne method with Example is not supported yet");
     }
 
     @Override
     public <S extends T> Iterable<S> findAll(Example<S> example, Sort sort) {
-        return null;
+        throw new UnsupportedOperationException("findAll method with Example and Sort is not supported yet");
     }
 
     @Override
     public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
+        throw new UnsupportedOperationException("findAll method with Example and Pageable is not supported yet");
     }
 
     @Override
-    public long count(Example example) {
-        return 0;
+    public <S extends T> long count(Example<S> example) {
+        throw new UnsupportedOperationException("count method with Example is not supported yet");
     }
 
     @Override
-    public boolean exists(Example example) {
-        return false;
+    public <S extends T> boolean exists(Example<S> example) {
+        throw new UnsupportedOperationException("exists method with Example is not supported yet");
     }
 
 }
