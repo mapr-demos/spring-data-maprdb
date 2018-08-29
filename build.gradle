@@ -14,10 +14,14 @@ repositories {
     }
 }
 
+test {
+    exclude '**/*Integration*'
+}
+
 dependencies {
     compile 'com.mapr.db:maprdb:6.0.1-mapr'
     compile 'org.springframework:spring-context:5.0.8.RELEASE'
-
+    compile 'org.springframework:spring-tx:5.0.8.RELEASE'
     compile("xerces:xercesImpl:2.11.0")
     compile("org.springframework.data:spring-data-commons:2.0.9.RELEASE")
     testCompile 'org.springframework:spring-test:5.0.8.RELEASE'
