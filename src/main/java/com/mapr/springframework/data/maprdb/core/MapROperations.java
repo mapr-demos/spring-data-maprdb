@@ -1,6 +1,7 @@
 package com.mapr.springframework.data.maprdb.core;
 
 import com.mapr.db.Table;
+import org.ojai.store.QueryCondition;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,5 +53,7 @@ public interface MapROperations {
     <T> void removeById(Object id, Class<T> entityClass, final String tableName);
 
     <T> long count(Class<T> entityClass);
+
+    <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass);
 
 }

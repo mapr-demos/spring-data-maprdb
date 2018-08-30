@@ -4,6 +4,7 @@ import com.mapr.db.MapRDB;
 import com.mapr.db.Table;
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
 import org.ojai.DocumentStream;
+import org.ojai.store.QueryCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,6 +168,11 @@ public class MapRTemplate implements MapROperations {
         rs.close();
 
         return totalRow;
+    }
+
+    @Override
+    public <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass) {
+        return convertDocumentStreamToIterable(getTable(getTablePath(entityClass)).find(queryCondition), entityClass);
     }
 
     private <T> List<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
