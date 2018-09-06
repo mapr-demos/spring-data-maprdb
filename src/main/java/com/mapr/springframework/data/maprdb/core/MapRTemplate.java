@@ -2,6 +2,7 @@ package com.mapr.springframework.data.maprdb.core;
 
 import com.mapr.db.MapRDB;
 import com.mapr.db.Table;
+
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
 import org.ojai.DocumentStream;
 import org.ojai.store.QueryCondition;
@@ -72,7 +73,8 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> Optional<T> findById(Object id, Class<T> entityClass, final String tableName) {
-        return Optional.of(getTable(tableName).findById(id.toString()).toJavaBean(entityClass));
+        org.ojai.Document document = getTable(tableName).findById(id.toString());
+        return Optional.ofNullable(document != null ? document.toJavaBean(entityClass) : null);
     }
 
     @Override
