@@ -1,12 +1,17 @@
 package com.mapr.springframework.data.maprdb.core;
 
 import com.mapr.db.Table;
+import org.ojai.store.Connection;
+import org.ojai.store.DocumentStore;
+import org.ojai.store.Query;
 import org.ojai.store.QueryCondition;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MapROperations {
+
+    Connection getConnection();
 
     <T> Table createTable(Class<T> entityClass);
 
@@ -23,6 +28,10 @@ public interface MapROperations {
     <T> boolean tableExists(Class<T> entityClass);
 
     boolean tableExists(final String tableName);
+
+    <T> DocumentStore getStore(Class<T> entityClass);
+
+    DocumentStore getStore(final String storeName);
 
     <T> Optional<T> findById(Object id, Class<T> entityClass);
 
@@ -55,5 +64,7 @@ public interface MapROperations {
     <T> long count(Class<T> entityClass);
 
     <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass);
+
+    <T> List<T> execute(Query query, Class<T> entityClass);
 
 }

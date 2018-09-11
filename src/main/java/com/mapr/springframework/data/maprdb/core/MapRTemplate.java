@@ -5,7 +5,7 @@ import com.mapr.db.Table;
 
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
 import org.ojai.DocumentStream;
-import org.ojai.store.QueryCondition;
+import org.ojai.store.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +20,16 @@ public class MapRTemplate implements MapROperations {
 
     private final String databaseName;
     private final static Logger LOGGER = LoggerFactory.getLogger(MapRTemplate.class);
-
+    private Connection connection;
 
     public MapRTemplate(final String databaseName) {
         this.databaseName = databaseName;
+        connection = DriverManager.getConnection("ojai:mapr:");
+    }
+
+    @Override
+    public Connection getConnection() {
+        return connection;
     }
 
     @Override
@@ -67,13 +73,24 @@ public class MapRTemplate implements MapROperations {
     }
 
     @Override
+    public <T> DocumentStore getStore(Class<T> entityClass) {
+        return getStore(getTablePath(entityClass));
+    }
+
+    @Override
+    public DocumentStore getStore(String storeName) {
+        return connection.getStore(getPath(storeName));
+    }
+
+    @Override
     public <T> Optional<T> findById(Object id, Class<T> entityClass) {
         return findById(id, entityClass, getTablePath(entityClass));
     }
 
     @Override
     public <T> Optional<T> findById(Object id, Class<T> entityClass, final String tableName) {
-        org.ojai.Document document = getTable(tableName).findById(id.toString());
+        org.ojai.Document document = getStore(entityClass).findById(id.toString());
+        //org.ojai.Document document = getTable(entityClass).findById(id.toString());
         return Optional.ofNullable(document != null ? document.toJavaBean(entityClass) : null);
     }
 
@@ -82,9 +99,12 @@ public class MapRTemplate implements MapROperations {
         return findAll(entityClass, getTablePath(entityClass));
     }
 
+    //TODO Rewrite to for not using getTable
     @Override
     public <T> List<T> findAll(Class<T> entityClass, final String tableName) {
         return convertDocumentStreamToIterable(getTable(tableName).find(), entityClass);
+//        return convertDocumentStreamToIterable(getStore(tableName).find(), entityClass);
+//        return execute(connection.newQuery().build(), entityClass, tableName);
     }
 
     @Override
@@ -94,11 +114,13 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> T insert(T objectToSave, final String tableName) {
-        Table table = getTable(tableName);
+        DocumentStore store = getStore(tableName);
+        //Table table = getTable(tableName);
 
-        org.ojai.Document document = MapRDB.newDocument(objectToSave);
+        org.ojai.Document document = connection.newDocument(objectToSave);
 
-        table.insert(document);
+        //table.insert(document);
+        store.insert(document);
 
         return (T) document.toJavaBean(objectToSave.getClass());
     }
@@ -115,12 +137,15 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> T save(T objectToSave, final String tableName) {
-        Table table = getTable(tableName);
+        //Table table = getTable(tableName);
+        DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = MapRDB.newDocument(objectToSave);
+        org.ojai.Document document = connection.newDocument(objectToSave);
 
-        table.insertOrReplace(document);
-        table.flush();
+//        table.insertOrReplace(document);
+//        table.flush();
+        store.insertOrReplace(document);
+        store.flush();
 
         return (T) document.toJavaBean(objectToSave.getClass());
     }
@@ -137,9 +162,12 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public void remove(Object object, final String tableName) {
-        Table table = getTable(tableName);
-        table.delete(MapRDB.newDocument(object));
-        table.flush();
+//        Table table = getTable(tableName);
+//        table.delete(MapRDB.newDocument(object));
+//        table.flush();
+        DocumentStore store = getStore(tableName);
+        store.delete(connection.newDocument(object));
+        store.flush();
     }
 
     @Override
@@ -149,9 +177,12 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> void removeById(Object id, Class<T> entityClass, final String tableName) {
-        Table table = getTable(tableName);
-        table.delete(id.toString());
-        table.flush();
+//        Table table = getTable(tableName);
+//        table.delete(id.toString());
+//        table.flush();
+        DocumentStore store = getStore(tableName);
+        store.delete(id.toString());
+        store.flush();
     }
 
     @Override
@@ -175,6 +206,15 @@ public class MapRTemplate implements MapROperations {
     @Override
     public <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass) {
         return convertDocumentStreamToIterable(getTable(getTablePath(entityClass)).find(queryCondition), entityClass);
+    }
+
+    @Override
+    public <T> List<T> execute(Query query, Class<T> entityClass) {
+        return execute(query, entityClass, getTablePath(entityClass));
+    }
+
+    private  <T> List<T> execute(Query query, Class<T> entityClass, String tableName) {
+        return convertDocumentStreamToIterable(getStore(tableName).find(query), entityClass);
     }
 
     private <T> List<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
