@@ -81,15 +81,19 @@ public class ConditionBasedMapRQuery extends AbstractMapRQuery {
                 condition = condition.exists(name).build();
                 break;
             case LESS_THAN:
+                //TODO fix object convert
                 condition = condition.is(name, QueryCondition.Op.LESS, Double.parseDouble(itr.next().toString())).build();
                 break;
             case LESS_THAN_EQUAL:
+                //TODO fix object convert
                 condition = condition.is(name, QueryCondition.Op.LESS_OR_EQUAL, Double.parseDouble(itr.next().toString())).build();
                 break;
             case GREATER_THAN:
+                //TODO fix object convert
                 condition = condition.is(name, QueryCondition.Op.GREATER, Double.parseDouble(itr.next().toString())).build();
                 break;
             case GREATER_THAN_EQUAL:
+                //TODO fix object convert
                 condition = condition.is(name, QueryCondition.Op.GREATER_OR_EQUAL, Double.parseDouble(itr.next().toString())).build();
                 break;
             case TRUE:
