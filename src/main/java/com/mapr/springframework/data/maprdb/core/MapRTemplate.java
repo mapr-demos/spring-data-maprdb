@@ -90,7 +90,6 @@ public class MapRTemplate implements MapROperations {
     @Override
     public <T> Optional<T> findById(Object id, Class<T> entityClass, final String tableName) {
         org.ojai.Document document = getStore(entityClass).findById(id.toString());
-        //org.ojai.Document document = getTable(entityClass).findById(id.toString());
         return Optional.ofNullable(document != null ? document.toJavaBean(entityClass) : null);
     }
 
@@ -115,11 +114,9 @@ public class MapRTemplate implements MapROperations {
     @Override
     public <T> T insert(T objectToSave, final String tableName) {
         DocumentStore store = getStore(tableName);
-        //Table table = getTable(tableName);
 
         org.ojai.Document document = connection.newDocument(objectToSave);
 
-        //table.insert(document);
         store.insert(document);
 
         return (T) document.toJavaBean(objectToSave.getClass());
@@ -137,13 +134,10 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> T save(T objectToSave, final String tableName) {
-        //Table table = getTable(tableName);
         DocumentStore store = getStore(tableName);
 
         org.ojai.Document document = connection.newDocument(objectToSave);
 
-//        table.insertOrReplace(document);
-//        table.flush();
         store.insertOrReplace(document);
         store.flush();
 
@@ -162,9 +156,6 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public void remove(Object object, final String tableName) {
-//        Table table = getTable(tableName);
-//        table.delete(MapRDB.newDocument(object));
-//        table.flush();
         DocumentStore store = getStore(tableName);
         store.delete(connection.newDocument(object));
         store.flush();
@@ -177,9 +168,6 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> void removeById(Object id, Class<T> entityClass, final String tableName) {
-//        Table table = getTable(tableName);
-//        table.delete(id.toString());
-//        table.flush();
         DocumentStore store = getStore(tableName);
         store.delete(id.toString());
         store.flush();
