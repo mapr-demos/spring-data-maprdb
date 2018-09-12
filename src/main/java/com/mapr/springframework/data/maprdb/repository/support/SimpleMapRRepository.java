@@ -2,10 +2,8 @@ package com.mapr.springframework.data.maprdb.repository.support;
 
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.ojai.store.Query;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -124,11 +122,19 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
 
     @Override
     public List<T> findAll(Sort sort) {
-        throw new UnsupportedOperationException("findAll method with Sort is not supported yet");
+        Query query = maprOperations.getConnection().newQuery();
+        for(Sort.Order o : sort)
+            query = query.orderBy(o.getProperty());
+        query = query.build();
+
+        return maprOperations.execute(query, domainClass);
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        throw new UnsupportedOperationException("findAll method with Pageable is not supported yet");
+        Long count = maprOperations.count(domainClass);
+        List<T> list = findAll();
+
+        return new PageImpl<>(list, pageable, count);
     }
 }
