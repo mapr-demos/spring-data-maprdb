@@ -1,7 +1,7 @@
 package com.mapr.springframework.data.maprdb.repository.query;
 
 import com.mapr.springframework.data.maprdb.core.MapROperations;
-import org.ojai.store.QueryCondition;
+import org.ojai.store.Query;
 import org.springframework.data.repository.query.RepositoryQuery;
 
 public abstract class AbstractMapRQuery implements RepositoryQuery {
@@ -19,9 +19,9 @@ public abstract class AbstractMapRQuery implements RepositoryQuery {
 
     @Override
     public Object execute(Object[] parameters) {
-        return operations.execute(convertToQueryConditions(parameters), domainClass);
+        return operations.execute(convertToQuery(parameters), domainClass);
     }
 
-    protected abstract QueryCondition convertToQueryConditions(Object[] parameters);
+    protected abstract Query convertToQuery(Object[] parameters);
 
 }
