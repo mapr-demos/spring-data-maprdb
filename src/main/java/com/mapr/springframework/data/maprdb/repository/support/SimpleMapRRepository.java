@@ -122,4 +122,13 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
         throw new UnsupportedOperationException("exists method with Example is not supported yet");
     }
 
+    @Override
+    public List<T> findAll(Sort sort) {
+        throw new UnsupportedOperationException("findAll method with Sort is not supported yet");
+    }
+
+    @Override
+    public Page<T> findAll(Pageable pageable) {
+        throw new UnsupportedOperationException("findAll method with Pageable is not supported yet");
+    }
 }
