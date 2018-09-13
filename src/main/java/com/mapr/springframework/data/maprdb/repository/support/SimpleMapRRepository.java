@@ -3,6 +3,7 @@ package com.mapr.springframework.data.maprdb.repository.support;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
 import org.ojai.store.Query;
+import org.ojai.store.SortOrder;
 import org.springframework.data.domain.*;
 
 import java.util.List;
@@ -120,19 +121,20 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
         throw new UnsupportedOperationException("exists method with Example is not supported yet");
     }
 
+    //TODO Fix for queries with over 5000 records
     @Override
     public List<T> findAll(Sort sort) {
         Query query = maprOperations.getConnection().newQuery();
         for(Sort.Order o : sort)
-            query = query.orderBy(o.getProperty());
-        query = query.build();
+            query = query.orderBy(o.getProperty(), o.isAscending() ? SortOrder.ASC : SortOrder.DESC);
+        query = query.limit(5000).build();
 
         return maprOperations.execute(query, domainClass);
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        Long count = maprOperations.count(domainClass);
+        long count = maprOperations.count(domainClass);
         List<T> list = findAll();
 
         return new PageImpl<>(list, pageable, count);

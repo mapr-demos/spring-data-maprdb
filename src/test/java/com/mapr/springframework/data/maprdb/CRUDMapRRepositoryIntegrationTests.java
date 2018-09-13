@@ -1,11 +1,13 @@
 package com.mapr.springframework.data.maprdb;
 
+import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.ojai.store.exceptions.DocumentExistsException;
@@ -177,6 +179,40 @@ public class CRUDMapRRepositoryIntegrationTests {
         repository.save(user);
 
         Assert.assertTrue(repository.existsById(user.getId()));
+    }
+
+    //TODO Test for queries with over 5000 records
+    @Test
+    public void SortTest() {
+        List<User> users = UserUtils.getUsers();
+
+        repository.saveAll(users);
+
+        List<User> usersFromDB = repository.findAll(new Sort(Sort.Direction.DESC,"name"));
+
+        List<User> sortedUsers = Lists.reverse(users.stream().sorted(Comparator.comparing(User::getName))
+                .collect(Collectors.toList()));
+
+        Assert.assertEquals(sortedUsers.size(), usersFromDB.size());
+
+        Assert.assertEquals(sortedUsers, usersFromDB);
+    }
+
+    //TODO Test for queries with over 5000 records
+    @Test
+    public void MultipleSortTest() {
+        List<User> users = UserUtils.getUsers();
+
+        repository.saveAll(users);
+
+        List<User> usersFromDB = repository.findAll(new Sort(Sort.Direction.ASC,"name", "_id"));
+
+        List<User> sortedUsers = users.stream().sorted(Comparator.comparing(User::getName).thenComparing(User::getId))
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(sortedUsers.size(), usersFromDB.size());
+
+        Assert.assertEquals(sortedUsers, usersFromDB);
     }
 
 }
