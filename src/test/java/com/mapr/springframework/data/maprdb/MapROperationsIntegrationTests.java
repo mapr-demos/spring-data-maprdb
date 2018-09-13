@@ -45,13 +45,6 @@ public class MapROperationsIntegrationTests {
     }
 
     @Test
-    public void getTableTest() {
-        mapROperations.createTable(TABLE_NAME);
-
-        Assert.assertNotNull(mapROperations.getTable(TABLE_NAME));
-    }
-
-    @Test
     public void createTableByEntityTest() {
         mapROperations.createTable(User.class);
 

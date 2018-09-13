@@ -43,16 +43,6 @@ public class MapRTemplate implements MapROperations {
     }
 
     @Override
-    public <T> Table getTable(Class<T> entityClass) {
-        return getTable(getTablePath(entityClass));
-    }
-
-    @Override
-    public Table getTable(final String tableName) {
-        return MapRDB.getTable(getPath(tableName));
-    }
-
-    @Override
     public <T> void dropTable(Class<T> entityClass) {
         dropTable(getTablePath(entityClass));
     }
@@ -98,12 +88,9 @@ public class MapRTemplate implements MapROperations {
         return findAll(entityClass, getTablePath(entityClass));
     }
 
-    //TODO Rewrite to for not using getTable
     @Override
     public <T> List<T> findAll(Class<T> entityClass, final String tableName) {
-        return convertDocumentStreamToIterable(getTable(tableName).find(), entityClass);
-//        return convertDocumentStreamToIterable(getStore(tableName).find(), entityClass);
-//        return execute(connection.newQuery().build(), entityClass, tableName);
+        return execute(connection.newQuery().build(), entityClass, tableName);
     }
 
     @Override
@@ -177,7 +164,8 @@ public class MapRTemplate implements MapROperations {
     public <T> long count(Class<T> entityClass) {
         LOGGER.warn("Count method use iterations over all records, so it is not recommended using it");
 
-        DocumentStream rs = getTable(entityClass).find("_id");
+        Query query = connection.newQuery().select("_id").build();
+        DocumentStream rs = getStore(entityClass).find(query);
         Iterator<org.ojai.Document> itrs = rs.iterator();
 
         long totalRow = 0;
@@ -193,7 +181,7 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass) {
-        return convertDocumentStreamToIterable(getTable(getTablePath(entityClass)).find(queryCondition), entityClass);
+        return execute(connection.newQuery().where(queryCondition).build(), entityClass);
     }
 
     @Override

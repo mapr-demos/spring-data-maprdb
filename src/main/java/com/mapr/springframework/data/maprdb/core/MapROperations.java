@@ -17,10 +17,6 @@ public interface MapROperations {
 
     Table createTable(final String tableName);
 
-    <T> Table getTable(Class<T> entityClass);
-
-    Table getTable(final String tableName);
-
     <T> void dropTable(Class<T> entityClass);
 
     void dropTable(final String tableName);
