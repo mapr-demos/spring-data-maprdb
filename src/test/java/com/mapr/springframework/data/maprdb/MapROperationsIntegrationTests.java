@@ -6,9 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ojai.store.Connection;
-import org.ojai.store.DriverManager;
 import org.ojai.store.Query;
+import org.ojai.store.QueryCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -73,12 +72,25 @@ public class MapROperationsIntegrationTests {
     }
 
     @Test
-    public void executeTest() {
+    public void executeQueryTest() {
         mapROperations.createTable(User.class);
 
         Query query = mapROperations.getConnection().newQuery().select("_id").orderBy("_id").limit(1).build();
 
         List<User> list = mapROperations.execute(query, User.class);
+
+        Assert.assertNotNull(list);
+    }
+
+    @Test
+    public void executeQueryConditionTest() {
+        mapROperations.createTable(User.class);
+
+        QueryCondition condition = mapROperations.getConnection().newCondition().build();
+
+        List<User> list = mapROperations.execute(condition, User.class);
+
+        Assert.assertNotNull(list);
     }
 
 }
