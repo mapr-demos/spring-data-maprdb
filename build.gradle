@@ -27,6 +27,12 @@ test {
     exclude '**/*Integration*'
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'org.apache.zookeeper:zookeeper:3.4.5-mapr-1604'
+    }
+}
+
 dependencies {
     compile 'com.mapr.ojai:mapr-ojai-driver:6.0.1-mapr'
     compile 'org.springframework:spring-context:5.0.8.RELEASE'
