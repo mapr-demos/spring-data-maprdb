@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -14,6 +16,8 @@ import org.ojai.store.exceptions.DocumentExistsException;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.mapr.springframework.data.maprdb.UserUtils.LIST_SIZE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { MapRTestConfiguration.class })
@@ -213,6 +217,52 @@ public class CRUDMapRRepositoryIntegrationTests {
         Assert.assertEquals(sortedUsers.size(), usersFromDB.size());
 
         Assert.assertEquals(sortedUsers, usersFromDB);
+    }
+
+    @Test
+    public void PageableTest() {
+        List<User> users = UserUtils.getUsers();
+
+        repository.saveAll(users);
+
+        int usersPerPage = 10;
+        int pageNumber = 1;
+        Page<User> pagedUsers = repository.findAll(PageRequest.of(pageNumber, usersPerPage));
+
+
+        Assert.assertEquals(usersPerPage, pagedUsers.getSize());
+
+        Assert.assertEquals(LIST_SIZE, pagedUsers.getTotalElements());
+
+        Assert.assertEquals(LIST_SIZE / usersPerPage, pagedUsers.getTotalPages());
+
+        List<User> filteredUsers = users.stream().sorted(Comparator.comparing(User::getId))
+                .skip(pageNumber * usersPerPage).limit(usersPerPage).collect(Collectors.toList());
+
+        Assert.assertEquals(filteredUsers, pagedUsers.getContent());
+    }
+
+    @Test
+    public void PageableWithSortTest() {
+        List<User> users = UserUtils.getUsers();
+
+        repository.saveAll(users);
+
+        int usersPerPage = 20;
+        int pageNumber = 2;
+        Page<User> pagedUsers = repository.findAll(
+                PageRequest.of(pageNumber, usersPerPage, Sort.Direction.ASC, "name"));
+
+        Assert.assertEquals(usersPerPage, pagedUsers.getSize());
+
+        Assert.assertEquals(LIST_SIZE, pagedUsers.getTotalElements());
+
+        Assert.assertEquals(LIST_SIZE / usersPerPage, pagedUsers.getTotalPages());
+
+        List<User> filteredUsers = users.stream().sorted(Comparator.comparing(User::getName))
+                .skip(pageNumber * usersPerPage).limit(usersPerPage).collect(Collectors.toList());
+
+        Assert.assertEquals(filteredUsers, pagedUsers.getContent());
     }
 
 }
