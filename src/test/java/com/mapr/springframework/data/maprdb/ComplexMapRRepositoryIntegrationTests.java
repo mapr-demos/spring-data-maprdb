@@ -73,6 +73,8 @@ public class ComplexMapRRepositoryIntegrationTests {
 
         List<User> usersFromDB = repository.findByNameNotLike(user.getName());
 
+        Assert.assertEquals(users.size(), usersFromDB.size());
+
         Assert.assertEquals(new HashSet<>(users), new HashSet<>(usersFromDB));
     }
 
@@ -231,12 +233,46 @@ public class ComplexMapRRepositoryIntegrationTests {
         Assert.assertEquals(new HashSet<>(usersForSearch), new HashSet<>(usersFromDB));
     }
 
+    @Test
+    public void findOrComplexTest() {
+        List<User> usersForSearch = new LinkedList<>();
+
+        User user  = users.get(55);
+        user.setEnabled(true);
+        usersForSearch.add(user);
+
+        user = users.get(88);
+        user.setAge(30);
+        usersForSearch.add(user);
+
+        user = users.get(20);
+        usersForSearch.add(user);
+
+        repository.saveAll(usersForSearch);
+
+        List<User> usersFromDB = repository.findByNameOrEnabledTrueOrAgeGreaterThan(user.getName(), 28);
+
+        Assert.assertEquals(usersForSearch.size(), usersFromDB.size());
+
+        Assert.assertEquals(new HashSet<>(usersForSearch), new HashSet<>(usersFromDB));
+    }
+
+    @Test
+    public void findAndComplexTest() {
+        User user = users.get(54);
+        user.setEnabled(true);
+        user.setAge(30);
+        repository.save(user);
+
+        List<User> usersFromDB = repository.findByNameAndEnabledTrueAndAgeGreaterThan(user.getName(), 28);
+
+        Assert.assertEquals(1, usersFromDB.size());
+
+        Assert.assertEquals(user, usersFromDB.get(0));
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void notImplementedMethod() {
-        List<User> users = UserUtils.getUsers();
-
-        repository.saveAll(users);
-
         User user = users.get(3);
 
         repository.findByNameContaining(user.getName());

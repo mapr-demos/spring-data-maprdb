@@ -31,5 +31,9 @@ public interface ComplexUserRepository  extends CrudRepository<User, String> {
 
     List<User> findByAgeGreaterThanEqual(int age);
 
+    List<User> findByNameOrEnabledTrueOrAgeGreaterThan(String name, int age);
+
+    List<User> findByNameAndEnabledTrueAndAgeGreaterThan(String name, int age);
+
     List<User> findByNameContaining(String name);
 }
