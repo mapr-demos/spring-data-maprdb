@@ -278,4 +278,17 @@ public class ComplexMapRRepositoryIntegrationTests {
         repository.findByNameContaining(user.getName());
     }
 
+    @Test
+    public void customQuery() {
+        User user = users.get(5);
+        user.setEnabled(true);
+        repository.save(user);
+
+        List<User> usersFromDB = repository.findCustom();
+
+        Assert.assertEquals(1, usersFromDB.size());
+
+        Assert.assertEquals(user, usersFromDB.get(0));
+    }
+
 }

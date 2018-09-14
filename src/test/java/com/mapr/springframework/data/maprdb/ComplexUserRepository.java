@@ -1,5 +1,6 @@
 package com.mapr.springframework.data.maprdb;
 
+import com.mapr.springframework.data.maprdb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -34,6 +35,9 @@ public interface ComplexUserRepository  extends CrudRepository<User, String> {
     List<User> findByNameOrEnabledTrueOrAgeGreaterThan(String name, int age);
 
     List<User> findByNameAndEnabledTrueAndAgeGreaterThan(String name, int age);
+
+    @Query("{\"$and\":[ {\"$eq\":{\"enabled\":true}}]}")
+    List<User> findCustom();
 
     List<User> findByNameContaining(String name);
 }

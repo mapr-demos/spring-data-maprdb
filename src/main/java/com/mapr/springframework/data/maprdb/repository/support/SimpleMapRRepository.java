@@ -3,7 +3,6 @@ package com.mapr.springframework.data.maprdb.repository.support;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
 import org.ojai.store.Query;
-import org.ojai.store.QueryCondition;
 import org.ojai.store.SortOrder;
 import org.springframework.data.domain.*;
 

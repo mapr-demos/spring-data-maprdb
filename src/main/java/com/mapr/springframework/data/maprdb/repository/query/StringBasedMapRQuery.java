@@ -19,7 +19,7 @@ public class StringBasedMapRQuery extends AbstractMapRQuery{
 
     @Override
     protected Query convertToQuery(Object[] parameters) {
-        return operations.getConnection().newQuery().where(query).build();
+        return operations.getConnection().newQuery(query).build();
     }
 
     @Override

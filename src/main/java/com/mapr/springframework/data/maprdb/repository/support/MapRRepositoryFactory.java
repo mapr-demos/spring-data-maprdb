@@ -4,6 +4,7 @@ import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.MapRPersistentEntityInformation;
 import com.mapr.springframework.data.maprdb.repository.query.ConditionBasedMapRQuery;
 import com.mapr.springframework.data.maprdb.repository.query.MapRQueryMethod;
+import com.mapr.springframework.data.maprdb.repository.query.StringBasedMapRQuery;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.NamedQueries;
@@ -75,10 +76,14 @@ public class MapRRepositoryFactory extends RepositoryFactorySupport {
                 final NamedQueries namedQueries) {
 
             final MapRQueryMethod queryMethod = new MapRQueryMethod(method, metadata, factory);
-            final String namedQueryName = queryMethod.getNamedQueryName();
 
-            return new ConditionBasedMapRQuery(queryMethod, operations);
+            if (queryMethod.hasAnnotatedQuery()) {
+                return new StringBasedMapRQuery(queryMethod, operations);
+            } else {
+                return new ConditionBasedMapRQuery(queryMethod, operations);
+            }
 
+//            final String namedQueryName = queryMethod.getNamedQueryName();
 //            if (namedQueries.hasQuery(namedQueryName)) {
 //                final String namedQuery = namedQueries.getQuery(namedQueryName);
 //                return new ConditionBasedMapRQuery(queryMethod, operations);
