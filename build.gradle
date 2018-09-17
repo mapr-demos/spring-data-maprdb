@@ -1,6 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+ext {
+    springVersion = "5.0.9.RELEASE"
+    springDataVersion = "2.0.10.RELEASE"
+    mapRVersion = "6.0.1-mapr"
+    zookeeperVersion = "3.4.5-mapr-1604"
+}
+
 group 'com.mapr.springframework.data'
 version '1.0-SNAPSHOT'
 
@@ -30,16 +37,15 @@ test {
 
 configurations.all {
     resolutionStrategy {
-        force 'org.apache.zookeeper:zookeeper:3.4.5-mapr-1604'
+        force "org.apache.zookeeper:zookeeper:$zookeeperVersion"
     }
 }
 
 dependencies {
-    compile 'com.mapr.ojai:mapr-ojai-driver:6.0.1-mapr'
-    compile 'org.springframework:spring-context:5.0.8.RELEASE'
-    compile 'org.springframework:spring-tx:5.0.8.RELEASE'
-    //compile 'xerces:xercesImpl:2.11.0'
-    compile 'org.springframework.data:spring-data-commons:2.0.9.RELEASE'
-    testCompile 'org.springframework:spring-test:5.0.8.RELEASE'
+    compile "com.mapr.ojai:mapr-ojai-driver:$mapRVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.springframework:spring-tx:$springVersion"
+    compile "org.springframework.data:spring-data-commons:$springDataVersion"
+    testCompile "org.springframework:spring-test:$springVersion"
     testCompile 'junit:junit:4.12'
 }
