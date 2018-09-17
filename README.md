@@ -78,3 +78,6 @@ public class MyService {
      }
 }
 ```
+### Ordering with Spring Data
+As Spring Data implementation for MaprDB uses OJAI you have to configure Drill for ordering.
+[Querying in OJAI Applications](https://mapr.com/docs/home/MapR-DB/JSON_DB/QueryingWithOJAI.html)
