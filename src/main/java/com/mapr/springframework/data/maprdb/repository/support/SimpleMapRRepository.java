@@ -2,6 +2,7 @@ package com.mapr.springframework.data.maprdb.repository.support;
 
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
+import com.mapr.springframework.data.maprdb.repository.query.QueryUtils;
 import org.ojai.store.Query;
 import org.ojai.store.SortOrder;
 import org.springframework.data.domain.*;
@@ -125,27 +126,21 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
     @Override
     public List<T> findAll(Sort sort) {
         Query query = maprOperations.getConnection().newQuery();
-        query = addOrderToQuery(query, sort);
-        query = query.limit(5000).build();
 
-        return maprOperations.execute(query, domainClass);
+        QueryUtils.addSortToQuery(query, sort).limit(5000);
+
+        return maprOperations.execute(query.build(), domainClass);
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
         long count = maprOperations.count(domainClass);
+
         Query query = maprOperations.getConnection().newQuery();
-        query = addOrderToQuery(query, pageable.getSort())
-                .offset(pageable.getOffset()).limit(pageable.getPageSize()).build();
-        List<T> list = maprOperations.execute(query, domainClass);
+        QueryUtils.addPageableToQuery(query, pageable);
+
+        List<T> list = maprOperations.execute(query.build(), domainClass);
 
         return new PageImpl<>(list, pageable, count);
-    }
-
-    private Query addOrderToQuery(Query query, Sort sort) {
-        for(Sort.Order o : sort)
-            query = query.orderBy(o.getProperty(), o.isAscending() ? SortOrder.ASC : SortOrder.DESC);
-
-        return query;
     }
 }

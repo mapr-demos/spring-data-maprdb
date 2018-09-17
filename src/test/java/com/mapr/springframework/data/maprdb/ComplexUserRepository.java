@@ -1,6 +1,7 @@
 package com.mapr.springframework.data.maprdb;
 
 import com.mapr.springframework.data.maprdb.repository.Query;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -35,6 +36,12 @@ public interface ComplexUserRepository  extends CrudRepository<User, String> {
     List<User> findByNameOrEnabledTrueOrAgeGreaterThan(String name, int age);
 
     List<User> findByNameAndEnabledTrueAndAgeGreaterThan(String name, int age);
+
+    List<User> findFirst10ByEnabledFalse();
+
+    List<User> findTop10ByEnabledFalse();
+
+    List<User> findByEnabledFalse(Pageable page);
 
     @Query("{\"$and\":[ {\"$eq\":{\"enabled\":true}}]}")
     List<User> findCustom();

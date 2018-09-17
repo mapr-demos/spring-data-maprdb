@@ -6,12 +6,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.awt.print.Pageable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.mapr.springframework.data.maprdb.UserUtils.LIST_SIZE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { MapRTestConfiguration.class })
@@ -276,6 +280,47 @@ public class ComplexMapRRepositoryIntegrationTests {
         User user = users.get(3);
 
         repository.findByNameContaining(user.getName());
+    }
+
+    @Test
+    public void firstTest() {
+        int expectedAmount = 10;
+        List<User> usersFromDB = repository.findFirst10ByEnabledFalse();
+
+        Assert.assertEquals(expectedAmount, usersFromDB.size());
+
+        List<User> expectedUsers = users.stream().sorted(Comparator.comparing(User::getId)).limit(expectedAmount)
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(expectedUsers, usersFromDB);
+    }
+
+    @Test
+    public void topTest() {
+        int expectedAmount = 10;
+        List<User> usersFromDB = repository.findTop10ByEnabledFalse();
+
+        Assert.assertEquals(expectedAmount, usersFromDB.size());
+
+        List<User> expectedUsers = users.stream().sorted(Comparator.comparing(User::getId))
+                .skip(LIST_SIZE - expectedAmount).collect(Collectors.toList());
+
+        Assert.assertEquals(expectedUsers, usersFromDB);
+    }
+
+    @Test
+    public void pageableTest() {
+        int expectedPage = 2;
+        int expectedNumberOfUsers = 13;
+
+        List<User> usersFromDB = repository.findByEnabledFalse(PageRequest.of(expectedPage, expectedNumberOfUsers));
+
+        Assert.assertEquals(expectedNumberOfUsers, usersFromDB.size());
+
+        List<User> expectedUsers = users.stream().sorted(Comparator.comparing(User::getId))
+                .skip(expectedPage * expectedNumberOfUsers).limit(expectedNumberOfUsers).collect(Collectors.toList());
+
+        Assert.assertEquals(expectedUsers, usersFromDB);
     }
 
     @Test
