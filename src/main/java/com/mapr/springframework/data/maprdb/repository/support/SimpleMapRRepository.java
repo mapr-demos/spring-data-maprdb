@@ -4,7 +4,6 @@ import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
 import com.mapr.springframework.data.maprdb.repository.query.QueryUtils;
 import org.ojai.store.Query;
-import org.ojai.store.SortOrder;
 import org.springframework.data.domain.*;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.mapr.springframework.data.maprdb.functional.repository;
 
-import com.mapr.springframework.data.maprdb.functional.model.User;
+import com.mapr.springframework.data.maprdb.model.User;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
 import com.mapr.springframework.data.maprdb.repository.Query;
 import org.springframework.data.domain.Pageable;

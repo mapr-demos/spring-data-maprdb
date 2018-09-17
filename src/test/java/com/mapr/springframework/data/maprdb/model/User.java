@@ -1,4 +1,4 @@
-package com.mapr.springframework.data.maprdb.functional.model;
+package com.mapr.springframework.data.maprdb.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mapr.springframework.data.maprdb.core.mapping.Document;

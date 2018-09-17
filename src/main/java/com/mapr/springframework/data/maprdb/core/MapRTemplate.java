@@ -23,8 +23,12 @@ public class MapRTemplate implements MapROperations {
     private Connection connection;
 
     public MapRTemplate(final String databaseName) {
+        this(databaseName, DriverManager.getConnection("ojai:mapr:"));
+    }
+
+    protected MapRTemplate(final String databaseName, Connection connection) {
         this.databaseName = databaseName;
-        connection = DriverManager.getConnection("ojai:mapr:");
+        this.connection = connection;
     }
 
     @Override

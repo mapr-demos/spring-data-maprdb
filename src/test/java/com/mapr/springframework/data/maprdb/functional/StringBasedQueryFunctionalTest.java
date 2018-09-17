@@ -1,6 +1,6 @@
 package com.mapr.springframework.data.maprdb.functional;
 
-import com.mapr.springframework.data.maprdb.functional.model.User;
+import com.mapr.springframework.data.maprdb.model.User;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 package com.mapr.springframework.data.maprdb.functional;
 
 import com.google.common.collect.Lists;
-import com.mapr.springframework.data.maprdb.functional.model.User;
+import com.mapr.springframework.data.maprdb.model.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.data.domain.Page;

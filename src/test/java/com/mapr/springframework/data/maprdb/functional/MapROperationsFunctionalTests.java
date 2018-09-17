@@ -1,7 +1,7 @@
 package com.mapr.springframework.data.maprdb.functional;
 
-import com.mapr.springframework.data.maprdb.functional.model.User;
-import com.mapr.springframework.data.maprdb.functional.model.UserWithCustomTable;
+import com.mapr.springframework.data.maprdb.model.User;
+import com.mapr.springframework.data.maprdb.model.UserWithCustomTable;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import org.junit.After;
 import org.junit.Assert;

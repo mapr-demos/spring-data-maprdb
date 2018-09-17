@@ -1,7 +1,7 @@
 package com.mapr.springframework.data.maprdb.functional;
 
 import com.mapr.springframework.data.maprdb.core.MapROperations;
-import com.mapr.springframework.data.maprdb.functional.model.User;
+import com.mapr.springframework.data.maprdb.model.User;
 import com.mapr.springframework.data.maprdb.functional.repository.ComplexUserRepository;
 import com.mapr.springframework.data.maprdb.utils.UserUtils;
 import org.junit.After;
