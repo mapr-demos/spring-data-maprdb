@@ -1,12 +1,13 @@
-package com.mapr.springframework.data.maprdb;
+package com.mapr.springframework.data.maprdb.functional.repository;
 
+import com.mapr.springframework.data.maprdb.functional.model.User;
+import com.mapr.springframework.data.maprdb.repository.MapRRepository;
 import com.mapr.springframework.data.maprdb.repository.Query;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface ComplexUserRepository  extends CrudRepository<User, String> {
+public interface ComplexUserRepository  extends MapRRepository<User, String> {
     List<User> findByName(String name);
 
     List<User> findByNameNot(String name);

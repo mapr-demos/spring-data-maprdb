@@ -1,4 +1,4 @@
-package com.mapr.springframework.data.maprdb;
+package com.mapr.springframework.data.maprdb.functional;
 
 import com.mapr.springframework.data.maprdb.config.AbstractMapRConfiguration;
 import com.mapr.springframework.data.maprdb.repository.config.EnableMapRRepository;

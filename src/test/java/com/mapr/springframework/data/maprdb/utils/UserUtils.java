@@ -1,4 +1,6 @@
-package com.mapr.springframework.data.maprdb;
+package com.mapr.springframework.data.maprdb.utils;
+
+import com.mapr.springframework.data.maprdb.functional.model.User;
 
 import java.util.LinkedList;
 import java.util.List;

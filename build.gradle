@@ -24,7 +24,8 @@ uploadArchives {
 }
 
 test {
-    exclude '**/*Integration*'
+    exclude '**/integration'
+    exclude '**/functional'
 }
 
 configurations.all {

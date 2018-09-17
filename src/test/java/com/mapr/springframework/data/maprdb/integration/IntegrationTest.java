@@ -1,4 +1,4 @@
-package com.mapr.springframework.data.maprdb;
+package com.mapr.springframework.data.maprdb.integration;
 
 import com.mapr.db.MapRDB;
 import org.junit.After;

@@ -1,4 +1,4 @@
-package com.mapr.springframework.data.maprdb;
+package com.mapr.springframework.data.maprdb.functional.model;
 
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
 

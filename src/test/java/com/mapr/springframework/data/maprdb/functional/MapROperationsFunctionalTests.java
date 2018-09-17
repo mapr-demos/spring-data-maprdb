@@ -1,5 +1,7 @@
-package com.mapr.springframework.data.maprdb;
+package com.mapr.springframework.data.maprdb.functional;
 
+import com.mapr.springframework.data.maprdb.functional.model.User;
+import com.mapr.springframework.data.maprdb.functional.model.UserWithCustomTable;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import org.junit.After;
 import org.junit.Assert;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { MapRTestConfiguration.class })
-public class MapROperationsIntegrationTests {
+public class MapROperationsFunctionalTests {
 
     public final static String TABLE_NAME = "/user";
     public final static String CUSTOM_TABLE_NAME = "/user2";
