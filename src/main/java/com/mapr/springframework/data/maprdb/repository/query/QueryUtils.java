@@ -29,7 +29,10 @@ public class QueryUtils {
                 conditions.condition(cond);
         }
 
-        return conditions.close().build();
+        if(!conditions.isEmpty())
+            conditions.close();
+
+        return conditions.build();
     }
 
     public static QueryCondition convertOrPartToQueryCondition(Connection connection, PartTree.OrPart orPart, Iterator itr) {

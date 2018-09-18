@@ -4,6 +4,7 @@ import com.mapr.springframework.data.maprdb.model.User;
 import com.mapr.springframework.data.maprdb.repository.MapRRepository;
 import com.mapr.springframework.data.maprdb.repository.Query;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -43,6 +44,10 @@ public interface ComplexUserRepository  extends MapRRepository<User, String> {
     List<User> findTop10ByEnabledFalse();
 
     List<User> findByEnabledFalse(Pageable page);
+
+    List<User> findFirst100ByOrderByNameAsc();
+
+    List<User> findFirst100ByEnabledFalse(Sort sort);
 
     @Query("{\"$and\":[ {\"$eq\":{\"enabled\":true}}]}")
     List<User> findCustom();

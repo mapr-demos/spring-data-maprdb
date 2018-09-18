@@ -4,6 +4,7 @@ import com.mapr.springframework.data.maprdb.core.MapROperations;
 import org.ojai.store.Query;
 import org.ojai.store.QueryCondition;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.QueryMethod;
 import org.springframework.data.repository.query.parser.PartTree;
 
@@ -24,6 +25,9 @@ public class ConditionBasedMapRQuery extends AbstractMapRQuery {
         Query query = operations.getConnection().newQuery().where(condition);
 
         QueryUtils.addSortToQuery(query, tree.getSort());
+
+        if(method.getParameters().hasSortParameter())
+            QueryUtils.addSortToQuery(query, (Sort) parameters[method.getParameters().getSortIndex()]);
 
         if(tree.isLimiting()) {
             if(!isTopLimit()) {

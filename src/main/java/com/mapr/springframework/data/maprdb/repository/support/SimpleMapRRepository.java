@@ -121,7 +121,6 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
         throw new UnsupportedOperationException("exists method with Example is not supported yet");
     }
 
-    //TODO Fix for queries with over 5000 records
     @Override
     public List<T> findAll(Sort sort) {
         Query query = maprOperations.getConnection().newQuery();
