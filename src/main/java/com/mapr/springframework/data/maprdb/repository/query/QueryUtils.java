@@ -4,15 +4,15 @@ import org.ojai.store.Connection;
 import org.ojai.store.Query;
 import org.ojai.store.QueryCondition;
 import org.ojai.store.SortOrder;
+import org.ojai.types.OTimestamp;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.PartTree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 public class QueryUtils {
 
@@ -60,14 +60,16 @@ public class QueryUtils {
             case SIMPLE_PROPERTY:
                 parameters = itr.next();
                 if(!(parameters instanceof Collection<?>))
-                    condition.is(name, QueryCondition.Op.EQUAL, parameters.toString());
+                    setIsCondition(condition, name, QueryCondition.Op.EQUAL, parameters);
+//                    condition.is(name, QueryCondition.Op.EQUAL, parameters.toString());
                 else
                     throw new UnsupportedOperationException(part.getType().toString() + " method with Example is not supported yet");
                 break;
             case NEGATING_SIMPLE_PROPERTY:
                 parameters = itr.next();
                 if(!(parameters instanceof Collection<?>))
-                    condition.is(name, QueryCondition.Op.NOT_EQUAL, parameters.toString());
+                    setIsCondition(condition, name, QueryCondition.Op.NOT_EQUAL, parameters);
+//                    condition.is(name, QueryCondition.Op.NOT_EQUAL, parameters.toString());
                 else
                     throw new UnsupportedOperationException(part.getType().toString() + " method with Example is not supported yet");
                 break;
@@ -87,20 +89,24 @@ public class QueryUtils {
                 condition.exists(name);
                 break;
             case LESS_THAN:
+                setIsCondition(condition, name, QueryCondition.Op.LESS, itr.next());
                 //TODO fix object convert
-                condition.is(name, QueryCondition.Op.LESS, Double.parseDouble(itr.next().toString()));
+//                condition.is(name, QueryCondition.Op.LESS, Double.parseDouble(itr.next().toString()));
                 break;
             case LESS_THAN_EQUAL:
+                setIsCondition(condition, name, QueryCondition.Op.LESS_OR_EQUAL, itr.next());
                 //TODO fix object convert
-                condition.is(name, QueryCondition.Op.LESS_OR_EQUAL, Double.parseDouble(itr.next().toString()));
+//                condition.is(name, QueryCondition.Op.LESS_OR_EQUAL, Double.parseDouble(itr.next().toString()));
                 break;
             case GREATER_THAN:
+                setIsCondition(condition, name, QueryCondition.Op.GREATER, itr.next());
                 //TODO fix object convert
-                condition.is(name, QueryCondition.Op.GREATER, Double.parseDouble(itr.next().toString()));
+//                condition.is(name, QueryCondition.Op.GREATER, Double.parseDouble(itr.next().toString()));
                 break;
             case GREATER_THAN_EQUAL:
+                setIsCondition(condition, name, QueryCondition.Op.GREATER_OR_EQUAL, itr.next());
                 //TODO fix object convert
-                condition.is(name, QueryCondition.Op.GREATER_OR_EQUAL, Double.parseDouble(itr.next().toString()));
+//                condition.is(name, QueryCondition.Op.GREATER_OR_EQUAL, Double.parseDouble(itr.next().toString()));
                 break;
             case TRUE:
                 condition.is(name, QueryCondition.Op.EQUAL, true);
@@ -133,4 +139,44 @@ public class QueryUtils {
         return query.offset(offset).limit(limit);
     }
 
+    public static QueryCondition setIsCondition(QueryCondition condition, String name, QueryCondition.Op op, Object object) {
+
+        if(object instanceof BigDecimal)
+            condition.is(name, op, (BigDecimal) object);
+
+        else if(object instanceof Boolean)
+            condition.is(name, op, Boolean.parseBoolean(object.toString()));
+
+        else if(object instanceof Byte)
+            condition.is(name, op, (Byte) object);
+
+        else if(object instanceof ByteBuffer)
+            condition.is(name, op, (ByteBuffer) object);
+
+        else if(object instanceof Double)
+            condition.is(name, op, (Double) object);
+
+        else if(object instanceof Float)
+            condition.is(name, op, (Float) object);
+
+        else if(object instanceof Integer)
+            condition.is(name, op, (Integer) object);
+
+        else if(object instanceof Long)
+            condition.is(name, op, (Long) object);
+
+        else if(object instanceof Short)
+            condition.is(name, op, (Short) object);
+
+        else if(object instanceof Date)
+            condition.is(name, op, new OTimestamp((Date) object));
+
+        else if(object instanceof String)
+            condition.is(name, op, object.toString());
+
+        else
+            throw new UnsupportedOperationException(object.getClass().getCanonicalName() +  " type is not supported");
+
+        return condition;
+    }
 }

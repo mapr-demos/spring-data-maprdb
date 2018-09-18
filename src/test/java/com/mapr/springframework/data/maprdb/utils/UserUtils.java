@@ -33,7 +33,7 @@ public class UserUtils {
     }
 
     public static String getRandomString(int minLength, int maxLength) {
-        int leftLimit = 48;
+        int leftLimit = 97;
         int rightLimit = 122;
         int targetStringLength = ThreadLocalRandom.current().nextInt(minLength, maxLength - 1);
 

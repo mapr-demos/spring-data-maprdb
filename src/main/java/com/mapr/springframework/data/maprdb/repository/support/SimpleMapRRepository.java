@@ -125,7 +125,7 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
     public List<T> findAll(Sort sort) {
         Query query = maprOperations.getConnection().newQuery();
 
-        QueryUtils.addSortToQuery(query, sort).limit(5000);
+        QueryUtils.addSortToQuery(query, sort);
 
         return maprOperations.execute(query.build(), domainClass);
     }
