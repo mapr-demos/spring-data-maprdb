@@ -61,7 +61,6 @@ public class QueryUtils {
                 parameters = itr.next();
                 if(!(parameters instanceof Collection<?>))
                     setIsCondition(condition, name, QueryCondition.Op.EQUAL, parameters);
-//                    condition.is(name, QueryCondition.Op.EQUAL, parameters.toString());
                 else
                     throw new UnsupportedOperationException(part.getType().toString() + " method with Example is not supported yet");
                 break;
@@ -69,7 +68,6 @@ public class QueryUtils {
                 parameters = itr.next();
                 if(!(parameters instanceof Collection<?>))
                     setIsCondition(condition, name, QueryCondition.Op.NOT_EQUAL, parameters);
-//                    condition.is(name, QueryCondition.Op.NOT_EQUAL, parameters.toString());
                 else
                     throw new UnsupportedOperationException(part.getType().toString() + " method with Example is not supported yet");
                 break;
@@ -90,23 +88,15 @@ public class QueryUtils {
                 break;
             case LESS_THAN:
                 setIsCondition(condition, name, QueryCondition.Op.LESS, itr.next());
-                //TODO fix object convert
-//                condition.is(name, QueryCondition.Op.LESS, Double.parseDouble(itr.next().toString()));
                 break;
             case LESS_THAN_EQUAL:
                 setIsCondition(condition, name, QueryCondition.Op.LESS_OR_EQUAL, itr.next());
-                //TODO fix object convert
-//                condition.is(name, QueryCondition.Op.LESS_OR_EQUAL, Double.parseDouble(itr.next().toString()));
                 break;
             case GREATER_THAN:
                 setIsCondition(condition, name, QueryCondition.Op.GREATER, itr.next());
-                //TODO fix object convert
-//                condition.is(name, QueryCondition.Op.GREATER, Double.parseDouble(itr.next().toString()));
                 break;
             case GREATER_THAN_EQUAL:
                 setIsCondition(condition, name, QueryCondition.Op.GREATER_OR_EQUAL, itr.next());
-                //TODO fix object convert
-//                condition.is(name, QueryCondition.Op.GREATER_OR_EQUAL, Double.parseDouble(itr.next().toString()));
                 break;
             case TRUE:
                 condition.is(name, QueryCondition.Op.EQUAL, true);
