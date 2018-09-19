@@ -37,13 +37,21 @@ test {
 
 dependencies {
     compile ("com.mapr.ojai:mapr-ojai-driver:$mapRVersion") { 
-        exclude group: 'org.apache.zookeeper', module: 'zookeeper' 
+        exclude group: 'org.apache.zookeeper', module: 'zookeeper'
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
-    compile "org.apache.zookeeper:zookeeper:$zookeeperVersion"
+    compile ("org.apache.zookeeper:zookeeper:$zookeeperVersion") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+    compile ("org.springframework:spring-context:$springVersion") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework:spring-tx:$springVersion"
     compile "org.springframework.data:spring-data-commons:$springDataVersion"
+    
     testCompile "org.springframework:spring-test:$springVersion"
+    testCompile "org.slf4j:slf4j-log4j12:1.7.25"
     testCompile "org.mockito:mockito-core:2.22.0"
     testCompile "junit:junit:4.12"
 }
