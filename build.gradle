@@ -9,7 +9,7 @@ ext {
 }
 
 group 'com.mapr.springframework.data'
-version '1.0-SNAPSHOT'
+version '1.0.0.M1'
 
 sourceCompatibility = 1.8
 
@@ -35,14 +35,11 @@ test {
     exclude '**/functional'
 }
 
-configurations.all {
-    resolutionStrategy {
-        force "org.apache.zookeeper:zookeeper:$zookeeperVersion"
-    }
-}
-
 dependencies {
-    compile "com.mapr.ojai:mapr-ojai-driver:$mapRVersion"
+    compile ("com.mapr.ojai:mapr-ojai-driver:$mapRVersion") { 
+        exclude group: 'org.apache.zookeeper', module: 'zookeeper' 
+    }
+    compile "org.apache.zookeeper:zookeeper:$zookeeperVersion"
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework:spring-tx:$springVersion"
     compile "org.springframework.data:spring-data-commons:$springDataVersion"
