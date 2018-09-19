@@ -246,6 +246,27 @@ public class ConditionBasedQueryFunctionalTests extends AbstractFunctionalTests 
         Assert.assertEquals(user, usersFromDB.get(0));
     }
 
+    @Test
+    public void betweenTest() {
+        List<Integer> indexes = Arrays.asList(5, 10, 15);
+
+        List<User> usersForSearch = new LinkedList<>();
+
+        indexes.forEach(i-> {
+            User user = users.get(i);
+            user.setAge(30);
+            usersForSearch.add(user);
+        });
+
+        repository.saveAll(usersForSearch);
+
+        List<User> usersFromDB = repository.findByAgeBetweenOrEnabledTrue(29, 31);
+
+        Assert.assertEquals(usersForSearch.size(), usersFromDB.size());
+
+        Assert.assertEquals(new HashSet<>(usersForSearch), new HashSet<>(usersFromDB));
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void notImplementedMethod() {
         User user = users.get(3);

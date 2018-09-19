@@ -104,6 +104,12 @@ public class QueryUtils {
             case FALSE:
                 condition.is(name, QueryCondition.Op.EQUAL, false);
                 break;
+            case BETWEEN:
+                condition.and();
+                setIsCondition(condition, name, QueryCondition.Op.GREATER_OR_EQUAL, itr.next());
+                setIsCondition(condition, name, QueryCondition.Op.LESS_OR_EQUAL, itr.next());
+                condition.close();
+                break;
             default:
                 throw new UnsupportedOperationException(part.getType().toString() + " method is not supported yet");
         }

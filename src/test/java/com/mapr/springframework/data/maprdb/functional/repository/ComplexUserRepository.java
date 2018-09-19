@@ -39,6 +39,8 @@ public interface ComplexUserRepository  extends MapRRepository<User, String> {
 
     List<User> findByNameAndEnabledTrueAndAgeGreaterThan(String name, int age);
 
+    List<User> findByAgeBetweenOrEnabledTrue(int startAge, int endAge);
+
     List<User> findFirst10ByEnabledFalse();
 
     List<User> findTop10ByEnabledFalse();
