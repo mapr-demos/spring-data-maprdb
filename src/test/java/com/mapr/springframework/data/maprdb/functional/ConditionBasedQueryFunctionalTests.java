@@ -280,6 +280,20 @@ public class ConditionBasedQueryFunctionalTests extends AbstractFunctionalTests 
         Assert.assertEquals(new HashSet<>(users), new HashSet<>(usersFromDB));
     }
 
+    @Test
+    public void findOneTest() {
+        User user = users.get(3);
+        Optional userFormDB;
+        userFormDB = repository.findOneByName("T");
+
+        Assert.assertFalse(userFormDB.isPresent());
+
+        userFormDB = repository.findOneByName(user.getName());
+
+        Assert.assertTrue(userFormDB.isPresent());
+        Assert.assertEquals(user, userFormDB.get());
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void notImplementedMethod() {
         User user = users.get(3);

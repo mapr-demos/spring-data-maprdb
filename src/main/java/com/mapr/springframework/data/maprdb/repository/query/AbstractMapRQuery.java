@@ -3,6 +3,7 @@ package com.mapr.springframework.data.maprdb.repository.query;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import org.ojai.store.Query;
 import org.springframework.data.repository.query.RepositoryQuery;
+import java.util.List;
 
 public abstract class AbstractMapRQuery implements RepositoryQuery {
 
@@ -25,11 +26,25 @@ public abstract class AbstractMapRQuery implements RepositoryQuery {
             return null;
         }
 
-        return operations.execute(convertToQuery(parameters), domainClass);
+        return convertToFormat(operations.execute(convertToQuery(parameters), domainClass));
     }
 
     protected abstract Query convertToQuery(Object[] parameters);
 
     protected abstract boolean isDeleteQuery();
+
+    protected Object convertToFormat(List records) {
+
+        if(method.getReturnedObjectType() == null)
+            return null;
+
+        if(method.isCollectionQuery())
+            return records;
+
+        if(method.isStreamQuery())
+            return records.stream();
+
+        return records.size() > 0 ? records.get(0) : null;
+    }
 
 }

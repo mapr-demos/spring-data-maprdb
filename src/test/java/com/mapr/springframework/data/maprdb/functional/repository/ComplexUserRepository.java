@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ComplexUserRepository  extends MapRRepository<User, String> {
     List<User> findByName(String name);
@@ -51,6 +52,8 @@ public interface ComplexUserRepository  extends MapRRepository<User, String> {
     List<User> findFirst100ByOrderByNameAsc();
 
     List<User> findFirst100ByEnabledFalse(Sort sort);
+
+    Optional<User> findOneByName(String name);
 
     void deleteByName(String name);
 
