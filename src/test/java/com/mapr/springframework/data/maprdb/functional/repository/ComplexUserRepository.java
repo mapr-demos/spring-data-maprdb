@@ -52,13 +52,13 @@ public interface ComplexUserRepository  extends MapRRepository<User, String> {
 
     List<User> findFirst100ByEnabledFalse(Sort sort);
 
-    User deleteByName(String name);
+    void deleteByName(String name);
 
     @Query("{\"$and\":[ {\"$eq\":{\"enabled\":true}}]}")
     List<User> findCustom();
 
     @DeleteQuery("{\"$and\":[ {\"$eq\":{\"enabled\":true}}]}")
-    User deleteCustom();
+    void deleteCustom();
 
     List<User> findByNameContaining(String name);
 }

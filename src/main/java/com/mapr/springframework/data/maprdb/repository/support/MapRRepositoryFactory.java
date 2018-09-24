@@ -78,9 +78,9 @@ public class MapRRepositoryFactory extends RepositoryFactorySupport {
             final MapRQueryMethod queryMethod = new MapRQueryMethod(method, metadata, factory);
 
             if (queryMethod.hasAnnotatedQuery()) {
-                return new StringBasedMapRQuery(queryMethod, operations);
+                return new StringBasedMapRQuery(queryMethod, metadata.getDomainType(), operations);
             } else {
-                return new ConditionBasedMapRQuery(queryMethod, operations);
+                return new ConditionBasedMapRQuery(queryMethod, metadata.getDomainType(), operations);
             }
 
 //            final String namedQueryName = queryMethod.getNamedQueryName();

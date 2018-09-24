@@ -13,8 +13,9 @@ import java.util.Objects;
 public class ConditionBasedMapRQuery extends AbstractMapRQuery {
     private final PartTree tree;
 
-    public ConditionBasedMapRQuery(MapRQueryMethod method, MapROperations operations) {
-        super(method, operations);
+    public ConditionBasedMapRQuery(MapRQueryMethod method, Class<?> domainClass, MapROperations operations) {
+        super(method, domainClass, operations);
+
         tree = new PartTree(method.getName(), domainClass);
     }
 

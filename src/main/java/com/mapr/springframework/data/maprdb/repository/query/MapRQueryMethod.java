@@ -20,7 +20,6 @@ public class MapRQueryMethod extends QueryMethod {
 
     public MapRQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
         super(method, metadata, factory);
-
         this.method = method;
         this.annotationCache = new ConcurrentReferenceHashMap<>();
     }

@@ -10,11 +10,11 @@ public abstract class AbstractMapRQuery implements RepositoryQuery {
     protected final MapRQueryMethod method;
     protected final Class<?> domainClass;
 
-    public AbstractMapRQuery(MapRQueryMethod method, MapROperations operations) {
+    public AbstractMapRQuery(MapRQueryMethod method, Class<?> domainClass, MapROperations operations) {
 
         this.method = method;
         this.operations = operations;
-        domainClass = method.getReturnedObjectType();
+        this.domainClass = domainClass;
     }
 
     @Override

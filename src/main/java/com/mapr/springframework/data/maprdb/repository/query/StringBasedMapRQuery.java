@@ -8,12 +8,12 @@ public class StringBasedMapRQuery extends AbstractMapRQuery{
 
     protected String query;
 
-    public StringBasedMapRQuery(MapRQueryMethod method, MapROperations operations) {
-        this(method.getAnnotatedQuery(), method, operations);
+    public StringBasedMapRQuery(MapRQueryMethod method, Class<?> domainClass, MapROperations operations) {
+        this(method.getAnnotatedQuery(), method, domainClass, operations);
     }
 
-    public StringBasedMapRQuery(String query, MapRQueryMethod method, MapROperations operations) {
-        super(method, operations);
+    public StringBasedMapRQuery(String query, MapRQueryMethod method, Class<?> domainClass, MapROperations operations) {
+        super(method, domainClass, operations);
         this.query = query;
     }
 
