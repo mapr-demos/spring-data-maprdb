@@ -1,14 +1,14 @@
 package com.mapr.springframework.data.maprdb.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
+import com.mapr.springframework.data.maprdb.core.mapping.MapRId;
 
 import java.util.Objects;
 
 @Document
 public class User {
 
-    @JsonProperty("_id")
+    @MapRId
     private String id;
     private String name;
     private Boolean enabled = false;
