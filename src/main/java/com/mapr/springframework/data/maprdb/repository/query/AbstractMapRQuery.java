@@ -19,9 +19,17 @@ public abstract class AbstractMapRQuery implements RepositoryQuery {
 
     @Override
     public Object execute(Object[] parameters) {
+
+        if(isDeleteQuery()) {
+            operations.execute(convertToQuery(parameters), domainClass).forEach(operations::remove);
+            return null;
+        }
+
         return operations.execute(convertToQuery(parameters), domainClass);
     }
 
     protected abstract Query convertToQuery(Object[] parameters);
+
+    protected abstract boolean isDeleteQuery();
 
 }

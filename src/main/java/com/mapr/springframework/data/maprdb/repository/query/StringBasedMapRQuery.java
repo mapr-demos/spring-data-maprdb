@@ -23,7 +23,13 @@ public class StringBasedMapRQuery extends AbstractMapRQuery{
     }
 
     @Override
+    protected boolean isDeleteQuery() {
+        return method.getQueryAnnotation().delete();
+    }
+
+    @Override
     public QueryMethod getQueryMethod() {
         return null;
     }
+
 }

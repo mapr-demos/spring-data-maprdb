@@ -267,6 +267,19 @@ public class ConditionBasedQueryFunctionalTests extends AbstractFunctionalTests 
         Assert.assertEquals(new HashSet<>(usersForSearch), new HashSet<>(usersFromDB));
     }
 
+    @Test
+    public void deleteTest() {
+        User user = users.get(3);
+        users.remove(3);
+
+        repository.deleteByName(user.getName());
+        List<User> usersFromDB = repository.findAll();
+
+        Assert.assertEquals(users.size(), usersFromDB.size());
+
+        Assert.assertEquals(new HashSet<>(users), new HashSet<>(usersFromDB));
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void notImplementedMethod() {
         User user = users.get(3);

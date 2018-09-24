@@ -45,6 +45,11 @@ public class ConditionBasedMapRQuery extends AbstractMapRQuery {
     }
 
     @Override
+    protected boolean isDeleteQuery() {
+        return tree.isDelete();
+    }
+
+    @Override
     public QueryMethod getQueryMethod() {
         return null;
     }
