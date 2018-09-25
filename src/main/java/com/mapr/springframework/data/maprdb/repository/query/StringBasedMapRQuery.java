@@ -23,8 +23,18 @@ public class StringBasedMapRQuery extends AbstractMapRQuery{
     }
 
     @Override
+    protected boolean isCountQuery() {
+        return method.getQueryAnnotation().exists();
+    }
+
+    @Override
     protected boolean isDeleteQuery() {
         return method.getQueryAnnotation().delete();
+    }
+
+    @Override
+    protected boolean isExistsQuery() {
+        return method.getQueryAnnotation().count();
     }
 
     @Override

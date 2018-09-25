@@ -46,13 +46,18 @@ public class ConditionBasedMapRQuery extends AbstractMapRQuery {
     }
 
     @Override
+    protected boolean isCountQuery() {
+        return tree.isCountProjection();
+    }
+
+    @Override
     protected boolean isDeleteQuery() {
         return tree.isDelete();
     }
 
     @Override
-    public QueryMethod getQueryMethod() {
-        return null;
+    protected boolean isExistsQuery() {
+        return tree.isExistsProjection();
     }
 
     private boolean isTopLimit() {
