@@ -1,14 +1,14 @@
 package com.mapr.springframework.data.maprdb.model;
 
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
-import com.mapr.springframework.data.maprdb.core.mapping.MapRId;
+import org.springframework.data.annotation.Id;
 
 import java.util.Objects;
 
 @Document
 public class User {
 
-    @MapRId
+    @Id
     private String id;
     private String name;
     private Boolean enabled = false;

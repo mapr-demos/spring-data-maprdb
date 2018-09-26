@@ -4,6 +4,7 @@ import com.mapr.db.MapRDB;
 import com.mapr.db.Table;
 
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
+import com.mapr.springframework.data.maprdb.core.mapping.MapRJsonConverter;
 import org.ojai.DocumentStream;
 import org.ojai.store.*;
 import org.slf4j.Logger;
@@ -18,15 +19,18 @@ import java.util.stream.StreamSupport;
 
 public class MapRTemplate implements MapROperations {
 
-    private final String databaseName;
     private final static Logger LOGGER = LoggerFactory.getLogger(MapRTemplate.class);
+
+    private final String databaseName;
     private Connection connection;
+    private MapRJsonConverter converter;
 
     public MapRTemplate(final String databaseName) {
         this(databaseName, DriverManager.getConnection("ojai:mapr:"));
     }
 
     protected MapRTemplate(final String databaseName, Connection connection) {
+        converter = new MapRJsonConverter();
         this.databaseName = databaseName;
         this.connection = connection;
     }
@@ -84,7 +88,7 @@ public class MapRTemplate implements MapROperations {
     @Override
     public <T> Optional<T> findById(Object id, Class<T> entityClass, final String tableName) {
         org.ojai.Document document = getStore(entityClass).findById(id.toString());
-        return Optional.ofNullable(document != null ? document.toJavaBean(entityClass) : null);
+        return Optional.ofNullable(document != null ? converter.toObject(document.toString(), entityClass) : null);
     }
 
     @Override
@@ -106,11 +110,11 @@ public class MapRTemplate implements MapROperations {
     public <T> T insert(T objectToSave, final String tableName) {
         DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = connection.newDocument(objectToSave);
+        org.ojai.Document document = connection.newDocument(converter.toJson(objectToSave));
 
         store.insert(document);
 
-        return (T) document.toJavaBean(objectToSave.getClass());
+        return (T) converter.toObject(document.toString(), objectToSave.getClass());
     }
 
     @Override
@@ -127,12 +131,12 @@ public class MapRTemplate implements MapROperations {
     public <T> T save(T objectToSave, final String tableName) {
         DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = connection.newDocument(objectToSave);
+        org.ojai.Document document = connection.newDocument(converter.toJson(objectToSave));
 
         store.insertOrReplace(document);
         store.flush();
 
-        return (T) document.toJavaBean(objectToSave.getClass());
+        return (T) converter.toObject(document.toString(), objectToSave.getClass());
     }
 
     @Override
@@ -148,7 +152,7 @@ public class MapRTemplate implements MapROperations {
     @Override
     public void remove(Object object, final String tableName) {
         DocumentStore store = getStore(tableName);
-        store.delete(connection.newDocument(object));
+        store.delete(connection.newDocument(converter.toJson(object)));
         store.flush();
     }
 
@@ -200,7 +204,7 @@ public class MapRTemplate implements MapROperations {
     private <T> List<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
         List<T> resultCollection = new LinkedList<>();
 
-        documentStream.forEach(d -> resultCollection.add(d.toJavaBean(entityClass)));
+        documentStream.forEach(d -> resultCollection.add(converter.toObject(d.toString(), entityClass)));
 
         documentStream.close();
 
