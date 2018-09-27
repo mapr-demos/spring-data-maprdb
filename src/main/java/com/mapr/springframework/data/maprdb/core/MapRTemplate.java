@@ -1,15 +1,19 @@
 package com.mapr.springframework.data.maprdb.core;
 
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import com.mapr.db.MapRDB;
 import com.mapr.db.Table;
 
 import com.mapr.springframework.data.maprdb.core.mapping.Document;
+import com.mapr.springframework.data.maprdb.core.mapping.MapRId;
 import com.mapr.springframework.data.maprdb.core.mapping.MapRJsonConverter;
 import org.ojai.DocumentStream;
 import org.ojai.store.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -107,8 +111,7 @@ public class MapRTemplate implements MapROperations {
     public <T> T insert(T objectToSave, final String tableName) {
         DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = connection.newDocument(converter.toJson(objectToSave));
-        addIdIfNecessary(document);
+        org.ojai.Document document = getDocument(objectToSave);
 
         store.insert(document);
 
@@ -129,8 +132,7 @@ public class MapRTemplate implements MapROperations {
     public <T> T save(T objectToSave, final String tableName) {
         DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = connection.newDocument(converter.toJson(objectToSave));
-        addIdIfNecessary(document);
+        org.ojai.Document document = getDocument(objectToSave);
 
         store.insertOrReplace(document);
         store.flush();
@@ -229,11 +231,29 @@ public class MapRTemplate implements MapROperations {
             return String.format("/%s", className);
     }
 
-    private org.ojai.Document addIdIfNecessary(org.ojai.Document document) {
-        if(document.getId() == null)
-            document.setId(UUID.randomUUID().toString().replace("-", ""));
+    private <T> org.ojai.Document getDocument(T object) {
+        org.ojai.Document document = connection.newDocument(converter.toJson(object));
 
+        if (document.getId() == null) {
+            Class type = getIdType(object.getClass());
+
+            if (type == String.class)
+                document.setId(UUID.randomUUID().toString().replace("-", ""));
+            else
+                throw new RuntimeJsonMappingException("Id auto generation is provided only for String type, " +
+                        type.toString() + "is not supported yet");
+        }
         return document;
+    }
+
+    private Class getIdType(Class entityClass) {
+        Optional<Field> optional = Arrays.stream(entityClass.getDeclaredFields())
+                .filter(f-> f.getAnnotation(Id.class) != null || f.getAnnotation(MapRId.class) != null).findFirst();
+
+        if(optional.isPresent())
+            return optional.get().getType();
+        else
+            throw new RuntimeJsonMappingException("Id was not found in class " + entityClass.toString());
     }
 
 }
