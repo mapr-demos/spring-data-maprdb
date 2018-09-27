@@ -32,7 +32,7 @@ public abstract class AbstractFunctionalTests {
 
         delete();
         users = UserUtils.getUsers();
-        repository.saveAll(users);
+        users = repository.saveAll(users);
     }
 
     @After

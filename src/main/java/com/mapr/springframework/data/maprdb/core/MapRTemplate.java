@@ -10,10 +10,7 @@ import org.ojai.store.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -111,6 +108,7 @@ public class MapRTemplate implements MapROperations {
         DocumentStore store = getStore(tableName);
 
         org.ojai.Document document = connection.newDocument(converter.toJson(objectToSave));
+        addIdIfNecessary(document);
 
         store.insert(document);
 
@@ -132,6 +130,7 @@ public class MapRTemplate implements MapROperations {
         DocumentStore store = getStore(tableName);
 
         org.ojai.Document document = connection.newDocument(converter.toJson(objectToSave));
+        addIdIfNecessary(document);
 
         store.insertOrReplace(document);
         store.flush();
@@ -228,6 +227,13 @@ public class MapRTemplate implements MapROperations {
             return className;
         else
             return String.format("/%s", className);
+    }
+
+    private org.ojai.Document addIdIfNecessary(org.ojai.Document document) {
+        if(document.getId() == null)
+            document.setId(UUID.randomUUID().toString().replace("-", ""));
+
+        return document;
     }
 
 }

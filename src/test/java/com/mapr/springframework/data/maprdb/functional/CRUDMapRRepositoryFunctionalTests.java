@@ -43,7 +43,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void saveAndFindTest() {
         User user = UserUtils.getUser();
 
-        repository.save(user);
+        user = repository.save(user);
 
         User userFromDB = repository.findById(user.getId()).get();
 
@@ -53,9 +53,9 @@ public class CRUDMapRRepositoryFunctionalTests {
     @Test
     public void replaceSaveTest() {
         User user = UserUtils.getUser();
-        repository.save(user);
+        user = repository.save(user);
         user.setName("new_test_user");
-        repository.save(user);
+        user = repository.save(user);
 
         User userFromDB = repository.findById(user.getId()).get();
 
@@ -66,7 +66,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void multipleSaveAndFindTest() {
         List<User> users = UserUtils.getUsers();
 
-        repository.saveAll(users);
+        users = repository.saveAll(users);
 
         List<User> usersFromDB = repository.findAll();
 
@@ -77,7 +77,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void insertTest() {
         User user = UserUtils.getUser();
 
-        repository.insert(user);
+        user = repository.insert(user);
 
         User userFromDB = repository.findById(user.getId()).get();
 
@@ -88,7 +88,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void multipleInsertTest() {
         List<User> users = UserUtils.getUsers();
 
-        repository.insert(users);
+        users = repository.insert(users);
 
         List<User> usersFromDB = repository.findAll();
 
@@ -98,7 +98,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     @Test(expected = DocumentExistsException.class)
     public void insertReplaceTest() {
         User user = UserUtils.getUser();
-        repository.insert(user);
+        user = repository.insert(user);
         user.setName("new_test_user");
         repository.insert(user);
     }
@@ -107,7 +107,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void findAllByIdTest() {
         List<User> users = UserUtils.getUsers();
 
-        repository.saveAll(users);
+        users = repository.saveAll(users);
         List<User> usersForSearch = Arrays.asList(users.get(5), users.get(10), users.get(20));
         List<String> ids = usersForSearch.stream().map(User::getId).collect(Collectors.toList());
         List<User> usersFromDB = repository.findAllById(ids);
@@ -119,8 +119,8 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void deleteTest() {
         User user1 = UserUtils.getUser();
         User user2 = UserUtils.getUser();
-        repository.save(user1);
-        repository.save(user2);
+        user1 = repository.save(user1);
+        user2 = repository.save(user2);
 
         repository.delete(user1);
 
@@ -134,8 +134,8 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void deleteByIdTest() {
         User user1 = UserUtils.getUser();
         User user2 = UserUtils.getUser();
-        repository.save(user1);
-        repository.save(user2);
+        user1 = repository.save(user1);
+        user2 = repository.save(user2);
 
         repository.deleteById(user1.getId());
 
@@ -158,7 +158,7 @@ public class CRUDMapRRepositoryFunctionalTests {
     public void multipleDeleteTest() {
         List<User> users = UserUtils.getUsers();
 
-        repository.saveAll(users);
+        users = repository.saveAll(users);
 
         User user = users.get(3);
 
@@ -174,10 +174,11 @@ public class CRUDMapRRepositoryFunctionalTests {
     @Test
     public void existByIdTest() {
         User user = UserUtils.getUser();
-        
+        user.setId("123");
+
         Assert.assertFalse(repository.existsById(user.getId()));
         
-        repository.save(user);
+        user = repository.save(user);
 
         Assert.assertTrue(repository.existsById(user.getId()));
     }

@@ -5,7 +5,6 @@ import com.mapr.springframework.data.maprdb.model.User;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class UserUtils {
@@ -17,7 +16,6 @@ public class UserUtils {
     public static User getUser() {
         User user = new User();
 
-        user.setId(UUID.randomUUID().toString());
         user.setName(getRandomString(MIN_USER_NAME_LENGTH, MAX_USER_NAME_LENGTH));
 
         return user;
