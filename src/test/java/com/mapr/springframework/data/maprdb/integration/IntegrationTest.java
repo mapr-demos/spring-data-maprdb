@@ -14,12 +14,16 @@ import org.ojai.store.Query;
 public class IntegrationTest {
 
     public final static String TABLE_PATH = "/test/user";
+    public Connection connection;
+    public DocumentStore store;
 
     @Before
     @After
     public void init() {
         destroy();
         MapRDB.createTable(TABLE_PATH);
+        connection = DriverManager.getConnection("ojai:mapr:");
+        store = connection.getStore(TABLE_PATH);
     }
 
     @After
@@ -31,13 +35,10 @@ public class IntegrationTest {
     @Test
     public void connectionTest() {
         System.out.println("==== Start Application ===");
-        final Connection connection = DriverManager.getConnection("ojai:mapr:");
 
-        final DocumentStore store = connection.getStore(TABLE_PATH);
+        Query query = connection.newQuery().build();
 
-        final Query query = connection.newQuery().build();
-
-        final DocumentStream stream = store.find(query);
+        DocumentStream stream = store.find(query);
 
         for (final Document userDocument : stream) {
             System.out.println(userDocument.asJsonString());
@@ -47,4 +48,22 @@ public class IntegrationTest {
 
         connection.close();
     }
+
+    @Test
+    public void drillConnectionTest() {
+        System.out.println("==== Start Application ===");
+
+        Query query = connection.newQuery().orderBy("name").build();
+
+        DocumentStream stream = store.find(query);
+
+        for (final Document userDocument : stream) {
+            System.out.println(userDocument.asJsonString());
+        }
+
+        store.close();
+
+        connection.close();
+    }
+
 }
