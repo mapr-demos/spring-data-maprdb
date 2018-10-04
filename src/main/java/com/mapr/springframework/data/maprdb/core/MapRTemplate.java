@@ -89,7 +89,7 @@ public class MapRTemplate implements MapROperations {
     @Override
     public <T> Optional<T> findById(Object id, Class<T> entityClass, final String tableName) {
         org.ojai.Document document = getStore(entityClass).findById(id.toString());
-        return Optional.ofNullable(document != null ? converter.toObject(document.toString(), entityClass) : null);
+        return Optional.ofNullable(document != null ? converter.toObject(document.asMap(), entityClass) : null);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class MapRTemplate implements MapROperations {
     private <T> T insert(T objectToSave, Class idClass, DocumentStore store) {
         org.ojai.Document document = getDocumentWithId(objectToSave, idClass);
         store.insert(document);
-        return (T) converter.toObject(document.toString(), objectToSave.getClass());
+        return (T) converter.toObject(document.asMap(), objectToSave.getClass());
     }
 
     @Override
@@ -168,7 +168,7 @@ public class MapRTemplate implements MapROperations {
 
         store.insertOrReplace(document);
 
-        return (T) converter.toObject(document.toString(), objectToSave.getClass());
+        return (T) converter.toObject(document.asMap(), objectToSave.getClass());
     }
 
     @Override
@@ -283,7 +283,7 @@ public class MapRTemplate implements MapROperations {
     private <T> List<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
         List<T> resultCollection = new LinkedList<>();
 
-        documentStream.forEach(d -> resultCollection.add(converter.toObject(d.toString(), entityClass)));
+        documentStream.forEach(d -> resultCollection.add(converter.toObject(d.asMap(), entityClass)));
 
         documentStream.close();
 

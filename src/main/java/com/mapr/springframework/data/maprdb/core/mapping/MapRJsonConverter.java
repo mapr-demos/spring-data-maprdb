@@ -1,10 +1,8 @@
 package com.mapr.springframework.data.maprdb.core.mapping;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 
-import java.io.IOException;
+import java.util.Map;
 
 public class MapRJsonConverter {
 
@@ -15,24 +13,11 @@ public class MapRJsonConverter {
         mapper.setAnnotationIntrospector(new MapRAnnotationIntrospector());
     }
 
-    public <T> String toJson(T objectToConvert) {
-        try {
-            return mapper.writeValueAsString(objectToConvert);
-        } catch (JsonProcessingException e) {
-            RuntimeJsonMappingException exception = new RuntimeJsonMappingException(e.getMessage());
-            exception.setStackTrace(e.getStackTrace());
-            throw exception;
-        }
+    public <T> Map toJson(T objectToConvert) {
+        return mapper.convertValue(objectToConvert, Map.class);
     }
 
-    public <T> T toObject(String json, Class<T> entityClass) {
-        try {
-            return mapper.readValue(json, entityClass);
-        } catch (IOException e) {
-            RuntimeException exception = new RuntimeException(e.getMessage());
-            exception.setStackTrace(e.getStackTrace());
-            throw exception;
-        }
+    public <T> T toObject(Map json, Class<T> entityClass) {
+        return mapper.convertValue(json, entityClass);
     }
-
 }
