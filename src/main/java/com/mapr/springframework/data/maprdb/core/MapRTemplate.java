@@ -109,18 +109,40 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> T insert(T objectToSave, final String tableName) {
+        Class idClass = getIdType(objectToSave.getClass());
         DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = getDocument(objectToSave);
+        T object = insert(objectToSave, idClass, store);
 
+        store.flush();
+        store.close();
+
+        return object;
+    }
+
+    private <T> T insert(T objectToSave, Class idClass, DocumentStore store) {
+        org.ojai.Document document = getDocumentWithId(objectToSave, idClass);
         store.insert(document);
-
         return (T) converter.toObject(document.toString(), objectToSave.getClass());
     }
 
     @Override
     public <T> List<T> insert(Iterable<T> objectsToSave) {
-        return StreamSupport.stream(objectsToSave.spliterator(), false).map(this::insert).collect(Collectors.toList());
+        Iterator<T> itr = objectsToSave.iterator();
+        if(itr.hasNext()) {
+            Class type = itr.next().getClass();
+            DocumentStore store = getStore(getTablePath(type));
+            Class idClass = getIdType(type);
+
+            List<T> list = StreamSupport.stream(objectsToSave.spliterator(), false).map(o -> insert(o, idClass, store))
+                    .collect(Collectors.toList());
+
+            store.flush();
+            store.close();
+
+            return list;
+        } else
+            return Collections.emptyList();
     }
 
     @Override
@@ -130,19 +152,42 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> T save(T objectToSave, final String tableName) {
+        Class idClass = getIdType(objectToSave.getClass());
         DocumentStore store = getStore(tableName);
 
-        org.ojai.Document document = getDocument(objectToSave);
+        T object = save(objectToSave, idClass, store);
+
+        store.flush();
+        store.close();
+
+        return object;
+    }
+
+    private <T> T save(T objectToSave, Class idClass, DocumentStore store) {
+        org.ojai.Document document = getDocumentWithId(objectToSave, idClass);
 
         store.insertOrReplace(document);
-        store.flush();
 
         return (T) converter.toObject(document.toString(), objectToSave.getClass());
     }
 
     @Override
     public <T> List<T> save(Iterable<T> objectsToSave) {
-        return StreamSupport.stream(objectsToSave.spliterator(), false).map(this::save).collect(Collectors.toList());
+        Iterator<T> itr = objectsToSave.iterator();
+        if(itr.hasNext()) {
+            Class type = itr.next().getClass();
+            DocumentStore store = getStore(getTablePath(type));
+            Class idClass = getIdType(type);
+
+            List<T> list = StreamSupport.stream(objectsToSave.spliterator(), false).map(o -> save(o, idClass, store))
+                    .collect(Collectors.toList());
+
+            store.flush();
+            store.close();
+
+            return list;
+        } else
+            return Collections.emptyList();
     }
 
     @Override
@@ -155,6 +200,7 @@ public class MapRTemplate implements MapROperations {
         DocumentStore store = getStore(tableName);
         store.delete(connection.newDocument(converter.toJson(object)));
         store.flush();
+        store.close();
     }
 
     @Override
@@ -167,6 +213,31 @@ public class MapRTemplate implements MapROperations {
         DocumentStore store = getStore(tableName);
         store.delete(id.toString());
         store.flush();
+        store.close();
+    }
+
+    @Override
+    public <T> void remove(Iterable<T> objectsToDelete) {
+        Iterator<T> itr = objectsToDelete.iterator();
+        if(itr.hasNext()) {
+            Class type = itr.next().getClass();
+            DocumentStore store = getStore(getTablePath(type));
+            StreamSupport.stream(objectsToDelete.spliterator(), false)
+                    .forEach(o -> store.delete(connection.newDocument(converter.toJson(o))));
+            store.flush();
+            store.close();
+        }
+    }
+
+    @Override
+    public <T> void removeAll(Class<T> entityClass) {
+        DocumentStore store = getStore(entityClass);
+
+        DocumentStream dc = store.find(connection.newQuery().build());
+        store.delete(dc);
+
+        store.flush();
+        store.close();
     }
 
     @Override
@@ -199,7 +270,14 @@ public class MapRTemplate implements MapROperations {
     }
 
     private  <T> List<T> execute(Query query, Class<T> entityClass, String tableName) {
-        return convertDocumentStreamToIterable(getStore(tableName).find(query), entityClass);
+        DocumentStore store = getStore(tableName);
+
+        List<T> list = convertDocumentStreamToIterable(store.find(query), entityClass);
+
+        store.flush();
+        store.close();
+
+        return list;
     }
 
     private <T> List<T> convertDocumentStreamToIterable(DocumentStream documentStream, Class<T> entityClass) {
@@ -231,17 +309,15 @@ public class MapRTemplate implements MapROperations {
             return String.format("/%s", className);
     }
 
-    private <T> org.ojai.Document getDocument(T object) {
+    private <T> org.ojai.Document getDocumentWithId(T object, Class idClass) {
         org.ojai.Document document = connection.newDocument(converter.toJson(object));
 
         if (document.getId() == null) {
-            Class type = getIdType(object.getClass());
-
-            if (type == String.class)
+            if (idClass == String.class)
                 document.setId(UUID.randomUUID().toString().replace("-", ""));
             else
                 throw new RuntimeJsonMappingException("Id auto generation is provided only for String type, " +
-                        type.toString() + "is not supported yet");
+                        idClass.toString() + "is not supported yet");
         }
         return document;
     }

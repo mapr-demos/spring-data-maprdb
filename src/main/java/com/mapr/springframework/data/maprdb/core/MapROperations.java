@@ -57,6 +57,10 @@ public interface MapROperations {
 
     <T> void removeById(Object id, Class<T> entityClass, final String tableName);
 
+    <T> void remove(Iterable<T> objectsToDelete);
+
+    <T> void removeAll(Class<T> entityClass);
+
     <T> long count(Class<T> entityClass);
 
     <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass);

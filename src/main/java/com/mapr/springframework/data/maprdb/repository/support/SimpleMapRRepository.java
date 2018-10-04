@@ -83,12 +83,12 @@ public class SimpleMapRRepository<T, ID> implements MapRRepository<T, ID> {
 
     @Override
     public void deleteAll(Iterable entities) {
-        entities.forEach(this::delete);
+        maprOperations.remove(entities);
     }
 
     @Override
     public void deleteAll() {
-        deleteAll(findAll());
+        maprOperations.removeAll(domainClass);
     }
 
     @Override
