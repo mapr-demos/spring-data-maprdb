@@ -25,6 +25,9 @@ public class ConditionBasedMapRQuery extends AbstractMapRQuery {
         QueryCondition condition = QueryUtils.getQueryCondition(operations.getConnection(), tree, parameters);
         Query query = operations.getConnection().newQuery().where(condition);
 
+        if(isCountQuery() || isExistsQuery())
+            query.select("_id");
+
         QueryUtils.addSortToQuery(query, tree.getSort());
 
         if(method.getParameters().hasSortParameter())
