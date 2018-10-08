@@ -6,6 +6,7 @@ ext {
     springDataVersion = "2.0.10.RELEASE"
     mapRVersion = "6.0.1-mapr"
     zookeeperVersion = "3.4.5-mapr-1604"
+    drillJdbcVersion = "1.13.0-mapr"
 }
 
 group 'com.mapr.springframework.data'
@@ -39,9 +40,17 @@ dependencies {
     compile ("com.mapr.ojai:mapr-ojai-driver:$mapRVersion") { 
         exclude group: 'org.apache.zookeeper', module: 'zookeeper'
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
     }
     compile ("org.apache.zookeeper:zookeeper:$zookeeperVersion") {
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+    }
+    compile ("org.apache.drill.exec:drill-jdbc-all:$drillJdbcVersion") {
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'io.netty', module: 'netty'
+        exclude group: 'io.netty', module: 'netty-all'
     }
     compile ("org.springframework:spring-context:$springVersion") {
         exclude group: 'commons-logging', module: 'commons-logging'
