@@ -11,14 +11,14 @@ import org.ojai.store.DocumentStore;
 import org.ojai.store.DriverManager;
 import org.ojai.store.Query;
 
-public class IntegrationTest {
+public class OjaiIntegrationTest {
 
     public final static String TABLE_PATH = "/test/user";
+
     public Connection connection;
     public DocumentStore store;
 
     @Before
-    @After
     public void init() {
         destroy();
         MapRDB.createTable(TABLE_PATH);
