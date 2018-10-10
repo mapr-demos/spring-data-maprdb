@@ -16,10 +16,6 @@ public abstract class AbstractMapRConfiguration {
         return new MapRTemplate(getDatabaseName());
     }
 
-    private Set<? extends Class<?>> getInitialEntitySet() throws ClassNotFoundException {
-        return MapREntityClassScanner.scanForEntities(getEntityBasePackages());
-    }
-
     protected String[] getEntityBasePackages() {
         return new String[] { getClass().getPackage().getName() };
     }
