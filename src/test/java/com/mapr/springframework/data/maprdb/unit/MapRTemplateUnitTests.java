@@ -26,12 +26,13 @@ public class MapRTemplateUnitTests {
 
     @Before
     public void init() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Constructor c = MapRTemplate.class.getDeclaredConstructor(String.class, Connection.class);
+        Constructor c = MapRTemplate.class.getDeclaredConstructor(String.class, org.ojai.store.Connection.class,
+                java.sql.Connection.class);
         c.setAccessible(true);
 
         connection = getConnectionMock();
 
-        operations = (MapRTemplate) c.newInstance(DB_NAME, connection);
+        operations = (MapRTemplate) c.newInstance(DB_NAME, connection, null);
     }
 
     @Test

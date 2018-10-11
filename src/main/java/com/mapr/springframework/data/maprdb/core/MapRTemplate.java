@@ -12,8 +12,10 @@ import org.ojai.store.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
-
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -23,22 +25,40 @@ public class MapRTemplate implements MapROperations {
     private final static Logger LOGGER = LoggerFactory.getLogger(MapRTemplate.class);
 
     private final String databaseName;
-    private Connection connection;
+    private org.ojai.store.Connection ojaiConnection;
+    private java.sql.Connection drillConnection;
     private MapRJsonConverter converter;
 
-    public MapRTemplate(final String databaseName) {
-        this(databaseName, DriverManager.getConnection("ojai:mapr:"));
-    }
-
-    protected MapRTemplate(final String databaseName, Connection connection) {
+    public MapRTemplate(final String databaseName, final String host, final String username, final String password) {
         converter = new MapRJsonConverter();
         this.databaseName = databaseName;
-        this.connection = connection;
+        this.ojaiConnection = getNewOjaiConnection();
+        this.drillConnection = getNewDrillConnection(host, username, password);
+    }
+
+    protected MapRTemplate(final String databaseName, org.ojai.store.Connection ojaiConnection,
+                           java.sql.Connection drillConnection) {
+        converter = new MapRJsonConverter();
+        this.databaseName = databaseName;
+        this.ojaiConnection = ojaiConnection;
+        this.drillConnection = drillConnection;
+    }
+
+    private org.ojai.store.Connection getNewOjaiConnection() {
+        return DriverManager.getConnection("ojai:mapr:");
+    }
+
+    private java.sql.Connection getNewDrillConnection(String host, String username, String password) {
+        try {
+            return java.sql.DriverManager.getConnection(String.format("jdbc:drill:drillbit=%s", host), username, password);
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
     @Override
     public Connection getConnection() {
-        return connection;
+        return ojaiConnection;
     }
 
     @Override
@@ -78,7 +98,7 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public DocumentStore getStore(String storeName) {
-        return connection.getStore(getPath(storeName));
+        return ojaiConnection.getStore(getPath(storeName));
     }
 
     @Override
@@ -99,7 +119,7 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> List<T> findAll(Class<T> entityClass, final String tableName) {
-        return execute(connection.newQuery().build(), entityClass, tableName);
+        return execute(ojaiConnection.newQuery().build(), entityClass, tableName);
     }
 
     @Override
@@ -198,7 +218,7 @@ public class MapRTemplate implements MapROperations {
     @Override
     public void remove(Object object, final String tableName) {
         DocumentStore store = getStore(tableName);
-        store.delete(connection.newDocument(converter.toJson(object)));
+        store.delete(ojaiConnection.newDocument(converter.toJson(object)));
         store.flush();
         store.close();
     }
@@ -223,7 +243,7 @@ public class MapRTemplate implements MapROperations {
             Class type = itr.next().getClass();
             DocumentStore store = getStore(getTablePath(type));
             StreamSupport.stream(objectsToDelete.spliterator(), false)
-                    .forEach(o -> store.delete(connection.newDocument(converter.toJson(o))));
+                    .forEach(o -> store.delete(ojaiConnection.newDocument(converter.toJson(o))));
             store.flush();
             store.close();
         }
@@ -233,7 +253,7 @@ public class MapRTemplate implements MapROperations {
     public <T> void removeAll(Class<T> entityClass) {
         DocumentStore store = getStore(entityClass);
 
-        DocumentStream dc = store.find(connection.newQuery().build());
+        DocumentStream dc = store.find(ojaiConnection.newQuery().build());
         store.delete(dc);
 
         store.flush();
@@ -242,26 +262,23 @@ public class MapRTemplate implements MapROperations {
 
     @Override
     public <T> long count(Class<T> entityClass) {
-        LOGGER.warn("Count method use iterations over all records, so it is not recommended using it");
-
-        Query query = connection.newQuery().select("_id").build();
-        DocumentStream rs = getStore(entityClass).find(query);
-        Iterator<org.ojai.Document> itrs = rs.iterator();
-
-        long totalRow = 0;
-        while (itrs.hasNext()) {
-            itrs.next();
-            totalRow++;
+        try {
+            Statement statement = drillConnection.createStatement();
+            String query = String.format("SELECT COUNT(*) FROM dfs.`%s`", getPath(getTablePath(entityClass)));
+            ResultSet resultSet = statement.executeQuery(query);
+            resultSet.next();
+            long totalRow = Long.parseLong(resultSet.getString(1));
+            statement.close();
+            return totalRow;
+        } catch (SQLException ex) {
+            LOGGER.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
-
-        rs.close();
-
-        return totalRow;
     }
 
     @Override
     public <T> List<T> execute(QueryCondition queryCondition, Class<T> entityClass) {
-        return execute(connection.newQuery().where(queryCondition).build(), entityClass);
+        return execute(ojaiConnection.newQuery().where(queryCondition).build(), entityClass);
     }
 
     @Override
@@ -310,7 +327,7 @@ public class MapRTemplate implements MapROperations {
     }
 
     private <T> org.ojai.Document getDocumentWithId(T object, Class idClass) {
-        org.ojai.Document document = connection.newDocument(converter.toJson(object));
+        org.ojai.Document document = ojaiConnection.newDocument(converter.toJson(object));
 
         if (document.getId() == null) {
             if (idClass == String.class)

@@ -11,9 +11,15 @@ public abstract class AbstractMapRConfiguration {
 
     protected abstract String getDatabaseName();
 
+    protected abstract String getHost();
+
+    protected abstract String getUsername();
+
+    protected abstract String getPassword();
+
     @Bean
-    public MapROperations maprOperations() throws Exception {
-        return new MapRTemplate(getDatabaseName());
+    public MapROperations maprOperations() {
+        return new MapRTemplate(getDatabaseName(), getHost(), getUsername(), getPassword());
     }
 
     protected String[] getEntityBasePackages() {

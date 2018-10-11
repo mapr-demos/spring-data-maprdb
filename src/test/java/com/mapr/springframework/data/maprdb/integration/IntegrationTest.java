@@ -18,14 +18,14 @@ public class IntegrationTest {
 
     @BeforeClass
     public static void init() {
-        destroy();
+        //destroy();
 
         if(!MapRDB.tableExists(TABLE_PATH))
             MapRDB.createTable(TABLE_PATH);
 
     }
 
-    @AfterClass
+//    @AfterClass
     public static void destroy() {
         if(MapRDB.tableExists(TABLE_PATH))
             MapRDB.deleteTable(TABLE_PATH);

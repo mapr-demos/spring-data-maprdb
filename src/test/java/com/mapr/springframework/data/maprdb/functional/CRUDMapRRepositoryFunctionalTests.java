@@ -1,12 +1,10 @@
 package com.mapr.springframework.data.maprdb.functional;
 
+import com.mapr.db.MapRDB;
 import com.mapr.springframework.data.maprdb.model.User;
 import com.mapr.springframework.data.maprdb.functional.repository.UserRepository;
 import com.mapr.springframework.data.maprdb.utils.UserUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,9 +32,13 @@ public class CRUDMapRRepositoryFunctionalTests {
         Assert.assertNotNull(repository);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void countTest() {
-        Assert.assertEquals(0, repository.count());
+        List<User> users = UserUtils.getUsers();
+
+        users = repository.saveAll(users);
+
+        Assert.assertEquals(users.size(), repository.count());
     }
 
     @Test

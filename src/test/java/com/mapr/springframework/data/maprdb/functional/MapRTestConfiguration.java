@@ -15,4 +15,19 @@ public class MapRTestConfiguration extends AbstractMapRConfiguration {
         return DB_NAME;
     }
 
+    @Override
+    protected String getHost() {
+        return "node1";
+    }
+
+    @Override
+    protected String getUsername() {
+        return "";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "";
+    }
+
 }
