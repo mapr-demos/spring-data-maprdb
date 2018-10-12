@@ -17,18 +17,20 @@ public class IntegrationTest {
     public static String DRILL_JDBC_URL = "jdbc:drill:drillbit=node1";
 
     @BeforeClass
-    public static void init() {
-        //destroy();
+    public static void init() throws InterruptedException {
+        destroy();
 
         if(!MapRDB.tableExists(TABLE_PATH))
             MapRDB.createTable(TABLE_PATH);
 
     }
 
-//    @AfterClass
-    public static void destroy() {
+    @AfterClass
+    public static void destroy() throws InterruptedException {
         if(MapRDB.tableExists(TABLE_PATH))
             MapRDB.deleteTable(TABLE_PATH);
+
+        Thread.sleep(3000);
     }
 
     @Test
