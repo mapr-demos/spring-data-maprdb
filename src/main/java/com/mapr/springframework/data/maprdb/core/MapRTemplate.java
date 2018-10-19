@@ -50,8 +50,9 @@ public class MapRTemplate implements MapROperations {
 
     private java.sql.Connection getNewDrillConnection(String host, String username, String password) {
         try {
+            Class.forName("org.apache.drill.jdbc.Driver");
             return java.sql.DriverManager.getConnection(String.format("jdbc:drill:drillbit=%s", host), username, password);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return null;
         }
     }

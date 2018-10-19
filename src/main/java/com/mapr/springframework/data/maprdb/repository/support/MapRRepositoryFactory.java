@@ -11,8 +11,8 @@ import org.springframework.data.repository.core.NamedQueries;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.QueryLookupStrategy;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 
 import java.lang.reflect.Method;
@@ -45,7 +45,7 @@ public class MapRRepositoryFactory extends RepositoryFactorySupport {
     @Override
     protected Optional<QueryLookupStrategy> getQueryLookupStrategy(
             final QueryLookupStrategy.Key key,
-            final EvaluationContextProvider evaluationContextProvider) {
+            final QueryMethodEvaluationContextProvider evaluationContextProvider) {
 
         QueryLookupStrategy strategy = null;
         switch (key) {
@@ -82,16 +82,6 @@ public class MapRRepositoryFactory extends RepositoryFactorySupport {
             } else {
                 return new ConditionBasedMapRQuery(queryMethod, metadata.getDomainType(), operations);
             }
-
-//            final String namedQueryName = queryMethod.getNamedQueryName();
-//            if (namedQueries.hasQuery(namedQueryName)) {
-//                final String namedQuery = namedQueries.getQuery(namedQueryName);
-//                return new ConditionBasedMapRQuery(queryMethod, operations);
-//            } else if (queryMethod.hasAnnotatedQuery()) {
-//                return new ConditionBasedMapRQuery(queryMethod, operations);
-//            } else {
-//                return new ConditionBasedMapRQuery(queryMethod, operations);
-//            }
         }
 
     }

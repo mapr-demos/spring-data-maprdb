@@ -2,11 +2,11 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 ext {
-    springVersion = "5.0.9.RELEASE"
-    springDataVersion = "2.0.10.RELEASE"
+    springVersion = "5.1.1.RELEASE"
+    springDataVersion = "2.1.1.RELEASE"
     mapRVersion = "6.0.1-mapr"
-    zookeeperVersion = "3.4.5-mapr-1604"
-    drillJdbcVersion = "1.13.0-mapr"
+    zookeeperVersion = "3.4.11-mapr-1808"
+    drillJdbcVersion = "1.14.0-mapr"
 }
 
 group 'com.mapr.springframework.data'

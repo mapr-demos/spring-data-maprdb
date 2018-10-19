@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.data.repository.query.QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND;
@@ -37,7 +36,7 @@ public class ConditionBasedQueryUnitTests {
 
         operations = mock(MapRTemplate.class);
         when(operations.getConnection()).thenReturn(connection);
-        when(operations.execute(any(Query.class), anyObject())).thenReturn(users);
+        when(operations.execute(any(Query.class), any())).thenReturn(users);
 
         factory = new MapRRepositoryFactory(operations);
         factory.setQueryLookupStrategyKey(CREATE_IF_NOT_FOUND);

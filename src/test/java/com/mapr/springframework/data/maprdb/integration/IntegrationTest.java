@@ -71,9 +71,10 @@ public class IntegrationTest {
     }
 
     @Test
-    public void drillCustomConnectionTest() throws SQLException {
+    public void drillCustomConnectionTest() throws SQLException, ClassNotFoundException {
         System.out.println("==== Start DRILL Application ===");
 
+        Class.forName("org.apache.drill.jdbc.Driver");
         java.sql.Connection connection = java.sql.DriverManager.getConnection(DRILL_JDBC_URL, "root", "");
         Statement statement = connection.createStatement();
 
@@ -84,9 +85,10 @@ public class IntegrationTest {
     }
 
     @Test
-    public void drillRequestTest() throws SQLException {
+    public void drillRequestTest() throws SQLException, ClassNotFoundException {
         System.out.println("==== DRILL Application ===");
 
+        Class.forName("org.apache.drill.jdbc.Driver");
         java.sql.Connection connection = java.sql.DriverManager.getConnection(DRILL_JDBC_URL, "root", "");
         Statement statement = connection.createStatement();
 
