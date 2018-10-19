@@ -1,24 +1,39 @@
 package com.mapr.springframework.data.maprdb.integration;
 
 import com.mapr.db.MapRDB;
+import com.mapr.springframework.data.maprdb.utils.PropertiesReader;
 import org.junit.*;
 import org.ojai.Document;
 import org.ojai.DocumentStream;
 import org.ojai.store.DocumentStore;
 import org.ojai.store.Query;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 public class IntegrationTest {
 
-    public final static String TABLE_PATH = "/test/user";
-    public static String DRILL_JDBC_URL = "jdbc:drill:drillbit=node1";
+    public static String TABLE_PATH;
+
+    public static String USERNAME;
+
+    public static String PASSWORD;
+
+    public static String DRILL_JDBC_URL;
 
     @BeforeClass
     public static void init() throws InterruptedException {
+        Properties properties = PropertiesReader.getProperties("src/test/resources/tests.properties");
+
+        TABLE_PATH = String.format("/%s/user", properties.getProperty("database.name"));
+        USERNAME = properties.getProperty("database.user");
+        PASSWORD = properties.getProperty("database.password");
+        DRILL_JDBC_URL = String.format("jdbc:drill:drillbit=%s", properties.getProperty("database.host"));
+        long delay = Long.parseLong(properties.getProperty("database.delay"));
+
         destroy();
+        Thread.sleep(delay);
 
         if(!MapRDB.tableExists(TABLE_PATH))
             MapRDB.createTable(TABLE_PATH);
@@ -29,8 +44,6 @@ public class IntegrationTest {
     public static void destroy() throws InterruptedException {
         if(MapRDB.tableExists(TABLE_PATH))
             MapRDB.deleteTable(TABLE_PATH);
-
-        Thread.sleep(3000);
     }
 
     @Test
@@ -75,7 +88,7 @@ public class IntegrationTest {
         System.out.println("==== Start DRILL Application ===");
 
         Class.forName("org.apache.drill.jdbc.Driver");
-        java.sql.Connection connection = java.sql.DriverManager.getConnection(DRILL_JDBC_URL, "root", "");
+        java.sql.Connection connection = java.sql.DriverManager.getConnection(DRILL_JDBC_URL, USERNAME, PASSWORD);
         Statement statement = connection.createStatement();
 
         Assert.assertNotNull(statement);
@@ -89,7 +102,7 @@ public class IntegrationTest {
         System.out.println("==== DRILL Application ===");
 
         Class.forName("org.apache.drill.jdbc.Driver");
-        java.sql.Connection connection = java.sql.DriverManager.getConnection(DRILL_JDBC_URL, "root", "");
+        java.sql.Connection connection = java.sql.DriverManager.getConnection(DRILL_JDBC_URL, USERNAME, PASSWORD);
         Statement statement = connection.createStatement();
 
         final String sql = "SELECT * FROM dfs.`" + TABLE_PATH + "`";

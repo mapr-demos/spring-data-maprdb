@@ -1,12 +1,10 @@
 package com.mapr.springframework.data.maprdb.functional;
 
-import com.mapr.db.MapRDB;
 import com.mapr.springframework.data.maprdb.core.MapROperations;
 import com.mapr.springframework.data.maprdb.model.User;
 import com.mapr.springframework.data.maprdb.functional.repository.ComplexUserRepository;
 import com.mapr.springframework.data.maprdb.utils.UserUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
