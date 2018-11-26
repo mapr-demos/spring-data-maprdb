@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'maven'
 
 ext {
     springVersion = "5.1.1.RELEASE"
@@ -10,7 +9,7 @@ ext {
 }
 
 group 'com.mapr.springframework.data'
-version '1.0.0.M1'
+version '1.0.0.M2'
 
 sourceCompatibility = 1.8
 
@@ -18,16 +17,6 @@ repositories {
     mavenCentral()
     maven {
         url 'http://repository.mapr.com/maven'
-    }
-}
-
-String mavenUrl = 'file://path/to/folder'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: mavenUrl)
-        }
     }
 }
 
